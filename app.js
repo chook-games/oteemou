@@ -5,7 +5,7 @@
 
 'use strict';
 
-const DEFAULT_API_KEY = '__DEEPSEEK_API_KEY__';
+const DEFAULT_API_KEY = 'sk-4db2af8db4784b82a5ebe9c4daba0d9e';
 const STORAGE_KEY = 'oteemou_data';
 const CACHE_KEY = 'oteemou_cache';
 const MAX_CACHE = 20;
@@ -271,8 +271,8 @@ async function doSearch() {
   const d = getData();
   let apiKey = (d && d.apiKey) || DEFAULT_API_KEY;
 
-  // Check if API key is the placeholder (not replaced by GitHub Actions)
-  if (apiKey === '__DEEPSEEK_API_KEY__' || !apiKey) {
+  // Check if API key is missing
+  if (!apiKey) {
     showLoading(false);
     showToast('\u26a0\ufe0f \u03a0\u03c1\u03ad\u03c0\u03b5\u03b9 \u03bd\u03b1 \u03b5\u03b9\u03c3\u03ac\u03b3\u03b5\u03b9\u03c2 \u03c4\u03bf API key \u03c3\u03bf\u03c5 \u03b1\u03c0\u03cc \u03c4\u03bf \u03b5\u03b9\u03ba\u03bf\u03bd\u03af\u03b4\u03b9\u03bf \u0394\u03c5\u03c1\u03b1\u03af\u03c9\u03bd (\u2699\ufe0f) \u03c0\u03ac\u03bd\u03c9 \u03b4\u03b5\u03be\u03b9\u03ac!', 'error');
     return;

@@ -117,10 +117,9 @@ function handleSignup() {
   d.user = { name: name, email: email, password: password };
   saveData(d);
 
-  // Generate leaderboard via AI on first signup (fire and forget - showApp regardless)
-  generateLeaderboard(d).catch(function() {}).finally(function() {
-    showApp();
-  });
+  // Generate leaderboard via AI in background - show app immediately
+  generateLeaderboard(d);
+  showApp();
 }
 
 function handleLogin() {

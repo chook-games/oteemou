@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O tee mou - Ψάξε το απίθανο</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--orange:#FF6B35;--orange-light:#FF8F5E;--orange-dark:#E55A2B;--purple:#7B2D8E;--purple-light:#9B4DBA;--purple-dark:#5C1F6E;--bg:#FFF8F0;--bg-card:#FFF;--text:#2D1B3D;--text-light:#6B5B7B;--border:#FFD4B8;--shadow:rgba(123,45,142,0.15);--success:#2ECC71;--gold:#FFD700;--danger:#E74C3C;--font:'Fredoka',sans-serif;--radius:16px;--radius-sm:10px;--transition:0.3s cubic-bezier(0.4,0,0.2,1)}
+[data-theme="dark"]{--bg:#1A1025;--bg-card:#2D1B3D;--text:#F0E6F6;--text-light:#B8A8C8;--border:#4A2D5E;--shadow:rgba(0,0,0,0.3)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;transition:background var(--transition),color var(--transition);overflow-x:hidden}
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--purple-light);border-radius:4px}
+.header{position:sticky;top:0;z-index:100;background:linear-gradient(135deg,var(--orange),var(--purple));padding:12px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 20px var(--shadow)}
+.header-logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;color:#fff;font-size:1.5rem;font-weight:700}
+.header-actions{display:flex;align-items:center;gap:12px}
+.header-btn{background:rgba(255,255,255,0.2);border:none;color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;position:relative;transition:background var(--transition)}
+.header-btn:hover{background:rgba(255,255,255,0.35)}
+.cart-badge{position:absolute;top:-4px;right:-4px;background:var(--danger);color:#fff;font-size:0.65rem;font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font)}
+.user-name-display{color:#fff;font-weight:500;font-size:0.9rem;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.screen{display:none;animation:fadeIn .4s ease}
+.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.setup-container{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,var(--orange-light),var(--purple-light))}
+.setup-card{background:var(--bg-card);border-radius:var(--radius);padding:40px 32px;max-width:420px;width:100%;box-shadow:0 20px 60px var(--shadow);text-align:center}
+.setup-card h1{font-size:2.2rem;background:linear-gradient(135deg,var(--orange),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
+.setup-card .tagline{color:var(--text-light);margin-bottom:24px;font-size:.95rem}
+.form-group{margin-bottom:16px;text-align:left}
+.form-group label{display:block;font-weight:500;margin-bottom:4px;font-size:.85rem;color:var(--text-light)}
+.form-group input{width:100%;padding:12px 16px;border:2px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font);font-size:.95rem;background:var(--bg);color:var(--text);transition:border-color var(--transition)}
+.form-group input:focus{outline:none;border-color:var(--purple)}
+.btn{padding:12px 28px;border:none;border-radius:var(--radius-sm);font-family:var(--font);font-size:1rem;font-weight:600;cursor:pointer;transition:all var(--transition);display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:linear-gradient(135deg,var(--orange),var(--purple));color:#fff;width:100%;justify-content:center}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px var(--shadow)}
+.btn-secondary{background:var(--bg);color:var(--text);border:2px solid var(--border)}
+.btn-secondary:hover{border-color:var(--purple)}
+.btn-small{padding:8px 16px;font-size:.85rem}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-danger:hover{opacity:.9}
+.disclaimer{font-size:.75rem;color:var(--text-light);margin-top:16px;padding:10px;background:#FFF3CD;border-radius:var(--radius-sm);color:#856404}
+[data-theme="dark"] .disclaimer{background:#3D2E00;color:#FFD700}
+.homepage{min-height:calc(100vh - 64px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;text-align:center}
+.homepage .logo-big{font-size:4rem;margin-bottom:8px}
+.homepage h1{font-size:3rem;background:linear-gradient(135deg,var(--orange),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
+.homepage .tagline{font-size:1.2rem;color:var(--text-light);margin-bottom:32px}
+.search-container{width:100%;max-width:600px;position:relative}
+.search-bar{width:100%;padding:16px 20px;padding-right:60px;border:3px solid var(--border);border-radius:50px;font-family:var(--font);font-size:1.1rem;background:var(--bg-card);color:var(--text);transition:all var(--transition);box-shadow:0 4px 20px var(--shadow)}
+.search-bar:focus{outline:none;border-color:var(--purple);box-shadow:0 4px 30px rgba(123,45,142,0.25)}
+.search-btn{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:linear-gradient(135deg,var(--orange),var(--purple));border:none;color:#fff;width:46px;height:46px;border-radius:50%;cursor:pointer;font-size:1.2rem;transition:transform var(--transition)}
+.search-btn:hover{transform:translateY(-50%) scale(1.05)}
+.recent-section{margin-top:48px;width:100%;max-width:700px}
+.recent-section h3{font-size:1rem;color:var(--text-light);margin-bottom:12px}
+.recent-list{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.recent-tag{background:var(--bg-card);border:2px solid var(--border);border-radius:50px;padding:8px 16px;font-size:.85rem;cursor:pointer;transition:all var(--transition);display:flex;align-items:center;gap:6px}
+.recent-tag:hover{border-color:var(--purple);transform:translateY(-2px)}
+.recent-tag .rarity-badge{background:var(--gold);color:#333;border-radius:50px;padding:2px 8px;font-size:.7rem;font-weight:700}
+.results-container{max-width:1200px;margin:0 auto;padding:24px 20px}
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.results-header h2{font-size:1.3rem}
+.results-header .points-earned{background:var(--gold);color:#333;padding:6px 16px;border-radius:50px;font-weight:600;font-size:.9rem}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.product-card{background:var(--bg-card);border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 20px var(--shadow);transition:all var(--transition);border:2px solid transparent;position:relative}
+.product-card:hover{transform:translateY(-4px);box-shadow:0 8px 30px var(--shadow);border-color:var(--purple-light)}
+.product-card.rarity-100{border-color:var(--gold);animation:glowPulse 2s infinite}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 10px rgba(255,215,0,0.3)}50%{box-shadow:0 0 25px rgba(255,215,0,0.6)}}
+.product-image{width:100%;height:200px;background:linear-gradient(135deg,#E0D0E8,#FFD4B8);display:flex;align-items:center;justify-content:center;font-size:3rem;color:var(--text-light);position:relative;overflow:hidden}
+.product-image .missing-icon{font-size:4rem;opacity:.5}
+.product-image .crown{position:absolute;top:8px;right:8px;font-size:2rem;animation:crownBounce 1.5s infinite}
+@keyframes crownBounce{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-5px) rotate(5deg)}}
+.product-body{padding:16px}
+.product-name{font-size:1.1rem;font-weight:600;margin-bottom:6px;line-height:1.3}
+.product-desc{font-size:.85rem;color:var(--text-light);margin-bottom:12px;line-height:1.4}
+.product-price{font-size:1.5rem;font-weight:700;color:var(--orange);margin-bottom:8px}
+.product-rarity{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,var(--gold),#FFA500);color:#333;padding:4px 12px;border-radius:50px;font-size:.8rem;font-weight:600;margin-bottom:10px}
+.product-stars{display:flex;align-items:center;gap:4px;margin-bottom:4px;font-size:.9rem}
+.stars-filled{color:var(--gold)}
+.stars-empty{color:#DDD}
+.product-meta{font-size:.8rem;color:var(--text-light);margin-bottom:12px}
+.product-actions{display:flex;gap:8px;flex-wrap:wrap}
+.product-actions .btn{flex:1;justify-content:center;font-size:.8rem;padding:10px 12px;min-width:0}
+.btn-fav.active{background:#FFE0E0;color:var(--danger);border-color:var(--danger)}
+.btn-cart{background:var(--purple);color:#fff}
+.btn-cart:hover{background:var(--purple-dark)}
+.btn-buy{background:var(--orange);color:#fff}
+.btn-buy:hover{background:var(--orange-dark)}
+.reviews-section{margin-top:16px;border-top:2px solid var(--border);padding-top:12px}
+.reviews-section h4{font-size:.9rem;margin-bottom:8px;color:var(--text-light)}
+.review-item{background:var(--bg);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:8px;font-size:.8rem}
+.review-item .review-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.review-item .review-user{font-weight:600}
+.review-item .review-date{font-size:.7rem;color:var(--text-light)}
+.review-item .review-text{color:var(--text-light);line-height:1.3}
+.review-form{margin-top:8px;display:flex;flex-direction:column;gap:8px}
+.review-form textarea{width:100%;padding:10px;border:2px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font);font-size:.85rem;resize:vertical;min-height:60px;background:var(--bg);color:var(--text)}
+.review-form textarea:focus{outline:none;border-color:var(--purple)}
+.star-selector{display:flex;gap:4px;font-size:1.3rem;cursor:pointer}
+.star-selector span{cursor:pointer;transition:transform var(--transition)}
+.star-selector span:hover{transform:scale(1.2)}
+.loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(4px)}
+.loading-overlay.active{display:flex}
+.spinner{background:var(--bg-card);border-radius:var(--radius);padding:40px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.spinner-icon{width:60px;height:60px;border:5px solid var(--border);border-top-color:var(--purple);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner p{color:var(--text-light);font-size:.9rem}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:300;backdrop-filter:blur(4px);padding:20px}
+.modal-overlay.active{display:flex}
+.modal{background:var(--bg-card);border-radius:var(--radius);max-width:500px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:modalIn .3s ease}
+@keyframes modalIn{from{transform:scale(0.9);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-header{padding:20px 24px;border-bottom:2px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg-card);z-index:1}
+.modal-header h2{font-size:1.2rem}
+.modal-close{background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--text-light);transition:color var(--transition)}
+.modal-close:hover{color:var(--danger)}
+.modal-body{padding:20px 24px}
+.toast-container{position:fixed;bottom:20px;right:20px;z-index:500;display:flex;flex-direction:column;gap:8px}
+.toast{background:var(--bg-card);border-radius:var(--radius-sm);padding:14px 20px;box-shadow:0 8px 30px var(--shadow);border-left:4px solid var(--purple);animation:toastIn .3s ease;max-width:350px;font-size:.9rem;display:flex;align-items:center;gap:10px}
+.toast.success{border-left-color:var(--success)}
+.toast.error{border-left-color:var(--danger)}
+.toast.warning{border-left-color:var(--gold)}
+@keyframes toastIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+.confetti-container{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:400;overflow:hidden}
+.confetti-piece{position:absolute;width:10px;height:10px;top:-10px;animation:confettiFall linear forwards}
+@keyframes confettiFall{to{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.badge-grid{display:flex;flex-wrap:wrap;gap:10px}
+.badge-item{background:var(--bg);border-radius:var(--radius-sm);padding:12px 16px;text-align:center;flex:1;min-width:100px;border:2px solid var(--border);transition:all var(--transition)}
+.badge-item.locked{opacity:.4;filter:grayscale(1)}
+.badge-item.unlocked{border-color:var(--gold);background:linear-gradient(135deg,#FFF8E0,#FFF0C0)}
+[data-theme="dark"] .badge-item.unlocked{background:linear-gradient(135deg,#3D2E00,#5C4400)}
+.badge-item .badge-icon{font-size:2rem;display:block;margin-bottom:4px}
+.badge-item .badge-name{font-size:.8rem;font-weight:600}
+.badge-item .badge-desc{font-size:.7rem;color:var(--text-light)}
+.leaderboard-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:var(--radius-sm);margin-bottom:8px;background:var(--bg);transition:all var(--transition)}
+.leaderboard-item.current-user{background:linear-gradient(135deg,var(--orange-light),var(--purple-light));color:#fff}
+.leaderboard-item .rank{font-size:1.2rem;font-weight:700;width:30px;text-align:center}
+.leaderboard-item .rank.gold{color:var(--gold)}
+.leaderboard-item .rank.silver{color:#C0C0C0}
+.leaderboard-item .rank.bronze{color:#CD7F32}
+.leaderboard-item .lb-name{flex:1;font-weight:500}
+.leaderboard-item .lb-points{font-weight:700;color:var(--purple)}
+.leaderboard-item.current-user .lb-points{color:#fff}
+.hall-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+.hall-item{background:linear-gradient(135deg,#FFF8E0,#FFE0B0);border-radius:var(--radius);padding:20px;text-align:center;border:2px solid var(--gold)}
+[data-theme="dark"] .hall-item{background:linear-gradient(135deg,#3D2E00,#5C4400)}
+.hall-item .trophy{font-size:3rem}
+.hall-item .hall-name{font-size:.9rem;font-weight:600;margin:8px 0 4px}
+.hall-item .hall-rarity{font-size:.8rem;color:var(--text-light)}
+.purchase-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:600}
+.purchase-overlay.active{display:flex}
+.purchase-success{background:var(--bg-card);border-radius:var(--radius);padding:40px;text-align:center;max-width:400px;animation:modalIn .5s ease}
+.purchase-success .big-icon{font-size:4rem;margin-bottom:16px}
+.purchase-success h2{margin-bottom:8px}
+.purchase-success p{color:var(--text-light);margin-bottom:20px}
+.cart-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);align-items:center}
+.cart-item:last-child{border-bottom:none}
+.cart-item .cart-img{width:60px;height:60px;background:linear-gradient(135deg,#E0D0E8,#FFD4B8);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0}
+.cart-item .cart-info{flex:1}
+.cart-item .cart-name{font-weight:600;font-size:.9rem}
+.cart-item .cart-price{color:var(--orange);font-weight:600}
+.cart-item .cart-remove{background:none;border:none;color:var(--danger);cursor:pointer;font-size:1.2rem}
+.settings-group{margin-bottom:20px}
+.settings-group h3{font-size:1rem;margin-bottom:10px;color:var(--text-light)}
+@media(max-width:600px){.header{padding:10px 16px}.header-logo{font-size:1.2rem}.homepage h1{font-size:2rem}.homepage .logo-big{font-size:3rem}.products-grid{grid-template-columns:1fr}.modal{max-width:100%;margin:10px}.product-actions .btn{font-size:.75rem;padding:8px 10px}}
+.text-center{text-align:center}.mt-8{margin-top:8px}.mt-16{margin-top:16px}.mb-8{margin-bottom:8px}.mb-16{margin-bottom:16px}.gap-8{gap:8px}.flex{display:flex}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-between{justify-content:space-between}
+</style>
+</head>
+<body>
+
+<!-- SETUP SCREEN -->
+<div id="setupScreen" class="screen setup-container">
+  <div class="setup-card">
+    <div style="font-size:3rem;margin-bottom:8px;">🛒</div>
+    <h1>O tee mou</h1>
+    <p class="tagline">Ψάξε το απίθανο ✨</p>
+    <div style="display:flex;gap:0;margin-bottom:20px;border-radius:var(--radius-sm);overflow:hidden;border:2px solid var(--border);">
+      <button id="loginTabBtn" class="btn" style="flex:1;border-radius:0;background:var(--purple);color:#fff;" onclick="switchAuthTab('login')">Σύνδεση</button>
+      <button id="signupTabBtn" class="btn" style="flex:1;border-radius:0;background:var(--bg);color:var(--text);" onclick="switchAuthTab('signup')">Εγγραφή</button>
+    </div>
+    <div id="loginForm">
+      <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="π.χ. giannis@example.com"></div>
+      <div class="form-group"><label>Κωδικός</label><input type="password" id="loginPassword" placeholder="Ο κωδικός σου"></div>
+      <button class="btn btn-primary" onclick="handleLogin()">Σύνδεση 🚀</button>
+    </div>
+    <div id="signupForm" style="display:none;">
+      <div class="form-group"><label>Όνομα</label><input type="text" id="signupName" placeholder="π.χ. Γιάννης"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="signupEmail" placeholder="π.χ. giannis@example.com"></div>
+      <div class="form-group"><label>Κωδικός</label><input type="password" id="signupPassword" placeholder="Επίλεξε έναν κωδικό"></div>
+      <div class="disclaimer">⚠️ Πρόκειται για ψεύτικη σύνδεση, μην χρησιμοποιήσεις πραγματικό κωδικό.</div>
+      <button class="btn btn-primary mt-16" onclick="handleSignup()">Εγγραφή 🎉</button>
+    </div>
+    <div id="apiKeySection" style="margin-top:20px;padding-top:20px;border-top:2px solid var(--border);">
+      <p style="font-size:.85rem;color:var(--text-light);margin-bottom:10px;">🔑 API Key DeepSeek (προαιρετικό, υπάρχει default)</p>
+      <div class="form-group"><input type="password" id="apiKeyInput" placeholder="sk-..."></div>
+      <button class="btn btn-secondary btn-small" onclick="saveApiKey()">Αποθήκευση 💾</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="appScreen" class="screen">
+  <header class="header">
+    <a class="header-logo" onclick="showScreen('home')"><span>🛒</span><span>O tee mou</span></a>
+    <div class="header-actions">
+      <span class="user-name-display" id="headerUserName"></span>
+      <button class="header-btn" onclick="showFavorites()" title="Αγαπημένα">❤️</button>
+      <button class="header-btn" onclick="showCart()" title="Καλάθι">🛒<span class="cart-badge" id="cartBadge" style="display:none;">0</span></button>
+      <button class="header-btn" onclick="showProfile()" title="Προφίλ">👤</button>
+      <button class="header-btn" onclick="showSettings()" title="Ρυθμίσεις">⚙️</button>
+    </div>
+  </header>
+  <div id="homeScreen" class="screen homepage active">
+    <div class="logo-big">🛒</div>
+    <h1>O tee mou</h1>
+    <p class="tagline">Ψάξε το απίθανο ✨</p>
+    <div class="search-container">
+      <input type="text" class="search-bar" id="searchInput" placeholder="Τι απίθανο ψάχνεις σήμερα;" autocomplete="off" onkeydown="if(event.key==='Enter') doSearch()">
+      <button class="search-btn" onclick="doSearch()">🔍</button>
+    </div>
+    <div class="recent-section">
+      <h3>🔥 Πρόσφατες ανακαλύψεις άλλων χρηστών</h3>
+      <div class="recent-list" id="recentList"></div>
+    </div>
+  </div>
+  <div id="resultsScreen" class="screen">
+    <div class="results-container">
+      <div class="results-header">
+        <h2 id="resultsTitle">Αποτελέσματα</h2>
+        <span class="points-earned" id="pointsEarned">+0 πόντοι</span>
+      </div>
+      <div class="products-grid" id="productsGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"><div class="spinner-icon"></div><p>🔮 Ο αλγόριθμος ψάχνει για απίθανα προϊόντα...</p></div>
+</div>
+
+<!-- PURCHASE SUCCESS -->
+<div class="purchase-overlay" id="purchaseOverlay">
+  <div class="purchase-success">
+    <div class="big-icon">🎉</div>
+    <h2>Αγορά ολοκληρώθηκε!</h2>
+    <p id="purchaseProductName">Το προϊόν σου έρχεται... από άλλη διάσταση! 🚀</p>
+    <button class="btn btn-primary" onclick="closePurchase()">Τέλεια! ✅</button>
+    <button class="btn btn-secondary mt-8" onclick="closePurchaseAndReview()" style="width:100%;">Γράψε μια κριτική ✍️</button>
+  </div>
+</div>
+
+<!-- CONFETTI -->
+<div class="confetti-container" id="confettiContainer"></div>
+
+<!-- TOASTS -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header"><h2 id="modalTitle">Modal</h2><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   JAVASCRIPT - O tee mou Complete Application
+   ============================================================ */
+const DEFAULT_API_KEY = 'sk-4db2af8db4784b82a5ebe9c4daba0d9e';
+const STORAGE_KEY = 'oteemou_data';
+const CACHE_KEY = 'oteemou_cache';
+const MAX_CACHE = 20;
+
+function getData(){try{const r=localStorage.getItem(STORAGE_KEY);if(r)return JSON.parse(r)}catch(e){}return null}
+function saveData(d){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(d))}catch(e){showToast('⚠️ Πρόβλημα με την αποθήκευση.','error')}}
+function getCache(){try{const r=localStorage.getItem(CACHE_KEY);if(r)return JSON.parse(r)}catch(e){}return{}}
+function saveCache(c){try{localStorage.setItem(CACHE_KEY,JSON.stringify(c))}catch(e){}}
+function getDefaultData(){return{user:null,apiKey:DEFAULT_API_KEY,favorites:[],cart:[],purchaseHistory:[],userReviews:{},points:0,badges:[],rareFinds:[],leaderboard:null,darkMode:false}}
+
+function init(){
+  let d=getData()||getDefaultData();
+  if(!getData())saveData(d);
+  if(d.darkMode)document.documentElement.setAttribute('data-theme','dark');
+  if(d.user){showApp()}else{document.getElementById('setupScreen').classList.add('active')}
+  if(d.apiKey&&d.apiKey!==DEFAULT_API_KEY)document.getElementById('apiKeyInput').value=d.apiKey;
+  generateRecentDiscoveries();
+}
+
+function switchAuthTab(t){
+  const l=document.getElementById('loginForm'),s=document.getElementById('signupForm'),lb=document.getElementById('loginTabBtn'),sb=document.getElementById('signupTabBtn');
+  if(t==='login'){l.style.display='block';s.style.display='none';lb.style.background='var(--purple)';lb.style.color='#fff';sb.style.background='var(--bg)';sb.style.color='var(--text)'}
+  else{s.style.display='block';l.style.display='none';sb.style.background='var(--purple)';sb.style.color='#fff';lb.style.background='var(--bg)';lb.style.color='var(--text)'}
+}
+
+function handleSignup(){
+  const n=document.getElementById('signupName').value.trim(),e=document.getElementById('signupEmail').value.trim(),p=document.getElementById('signupPassword').value.trim();
+  if(!n||!e||!p)return showToast('⚠️ Συμπλήρωσε όλα τα πεδία!','error');
+  let d=getData()||getDefaultData();
+  d.user={name:n,email:e,password:p};
+  saveData(d);
+  // Generate leaderboard via AI on first signup
+  generateLeaderboard(d).then(()=>{showApp()});
+}
+
+function handleLogin(){
+  const e=document.getElementById('loginEmail').value.trim(),p=document.getElementById('loginPassword').value.trim();
+  if(!e||!p)return showToast('⚠️ Συμπλήρωσε email και κωδικό!','error');
+  let d=getData();
+  if(!d||!d.user||d.user.email!==e||d.user.password!==p)return showToast('❌ Λάθος email ή κωδικός!','error');
+  showApp();
+}
+
+function saveApiKey(){
+  const k=document.getElementById('apiKeyInput').value.trim();
+  if(!k)return showToast('⚠️ Γράψε ένα API key','error');
+  let d=getData()||getDefaultData();
+  d.apiKey=k;saveData(d);showToast('✅ API key αποθηκεύτηκε!','success');
+}
+
+function showApp(){
+  document.getElementById('setupScreen').classList.remove('active');
+  document.getElementById('appScreen').classList.add('active');
+  const d=getData();
+  if(d&&d.user)document.getElementById('headerUserName').textContent=d.user.name;
+  updateCartBadge();
+}
+
+function showScreen(s){
+  document.querySelectorAll('#appScreen .screen').forEach(el=>el.classList.remove('active'));
+  if(s==='home')document.getElementById('homeScreen').classList.add('active');
+  else if(s==='results')document.getElementById('resultsScreen').classList.add('active');
+}
+
+// ===== RECENT DISCOVERIES =====
+const FAKE_USERS=['Μαρία','Δημήτρης','Κατερίνα','Γιώργος','Ελένη','Νίκος','Σοφία','Αλέξης','Άννα','Πέτρος'];
+const FAKE_DISCOVERIES=[
+  {name:'Αόρατο καπέλο για γάτες',rarity:92},{name:'Νερό σε σκόνη',rarity:45},{name:'Πιρούνι που τραγουδάει',rarity:78},
+  {name:'Χαλί που πετάει (με ζώνη ασφαλείας)',rarity:88},{name:'Κουτάλι που μετράει θερμίδες',rarity:55},{name:'Ψηφιακό κατοικίδιο-πίτσα',rarity:97}
+];
+function generateRecentDiscoveries(){
+  const list=document.getElementById('recentList');
+  list.innerHTML='';
+  const shuffled=[...FAKE_DISCOVERIES].sort(()=>Math.random()-0.5).slice(0,5);
+  shuffled.forEach((d,i)=>{
+    const tag=document.createElement('span');
+    tag.className='recent-tag';
+    tag.innerHTML=`${FAKE_USERS[i%FAKE_USERS.length]} βρήκε: "${d.name}" <span class="rarity-badge">⭐${d.rarity}</span>`;
+    tag.onclick=()=>{document.getElementById('searchInput').value=d.name;doSearch()};
+    list.appendChild(tag);
+  });
+}
+
+// ===== DEEPSEEK API =====
+async function callDeepSeek(systemPrompt,userMessage,apiKey){
+  const resp=await fetch('https://api.deepseek.com/chat/completions',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':`Bearer ${apiKey}`},
+    body:JSON.stringify({
+      model:'deepseek-chat',
+      messages:[{role:'system',content:systemPrompt},{role:'user',content:userMessage}],
+      temperature:0.9,
+      max_tokens:2000
+    })
+  });
+  if(!resp.ok)throw new Error(`API error: ${resp.status}`);
+  const data=await resp.json();
+  return data.choices[0].message.content;
+}
+
+// ===== SEARCH =====
+async function doSearch(){
+  const query=document.getElementById('searchInput').value.trim();
+  if(!query)return showToast('⚠️ Γράψε κάτι για αναζήτηση!','error');
+  
+  // Check cache
+  const cache=getCache();
+  const cacheKey=query.toLowerCase().trim();
+  if(cache[cacheKey]){
+    displayResults(cache[cacheKey],query);
+    showToast('📦 Από την κρυφή μνήμη! (cache)','success');
+    return;
+  }
+  
+  const d=getData();
+  const apiKey=d.apiKey||DEFAULT_API_KEY;
+  
+  showLoading(true);
+  try {
+    const systemPrompt=`You are an absurd product generator for a parody e-commerce site. Given a search query, create 2-5 fake products. Respond ONLY with a valid JSON object (no markdown, no extra text) in this exact structure: 
+{"products":[
+  {"name":"Πετούμενο ψυγείο με φωνητική υποστήριξη","description":"Διατηρεί τα τρόφιμα δροσερά και σου λέει αν ξέχασες το γάλα.","price":3.42,"rarity":87,"ratingBreakdown":{"1":2,"2":3,"3":10,"4":25,"5":60},"totalPurchases":1324,"reviews":[{"username":"Γιάννης","rating":5,"text":"Μιλάει πιο καθαρά από το αφεντικό μου!","date":"2025-08-12"}]}
+]}
+Rarity must be 1-100. Number of reviews inversely proportional to rarity: 90-100→1-2 reviews, 70-89→2-3, 40-69→3-4, <40→4-5. ratingBreakdown must sum to 100%. totalPurchases 200-5000. All text in Greek. Usernames common Greek first names.`;
+    
+    const raw=await callDeepSeek(systemPrompt,`Search query: ${query}`,apiKey);
+    const cleaned=raw.replace(/```json?/gi,'').replace(/```/g,'').trim();
+    const result=JSON.parse(cleaned);
+    
+    if(!result.products||!result.products.length)throw new Error('No products');
+    
+    // Cache it
+    cache[cacheKey]=result.products;
+    const keys=Object.keys(cache);
+    if(keys.length>MAX_CACHE)delete cache[keys[0]];
+    saveCache(cache);
+    
+    displayResults(result.products,query);
+  } catch(e){
+    console.error(e);
+    showToast('😅 Ο αλγόριθμος πήγε για καφέ. Δοκίμασε ξανά!','error');
+  } finally {
+    showLoading(false);
+  }
+}
+
+function displayResults(products,query){
+  document.getElementById('resultsTitle').textContent=`Αποτελέσματα για: "${query}"`;
+  
+  // Calculate points
+  const totalRarity=products.reduce((sum,p)=>sum+(p.rarity||0),0);
+  document.getElementById('pointsEarned').textContent=`+${totalRarity} πόντοι`;
+  
+  // Add points to user
+  let d=getData();
+  if(d){
+    d.points=(d.points||0)+totalRarity;
+    checkBadges(d);
+    saveData(d);
+  }
+  
+  const grid=document.getElementById('productsGrid');
+  grid.innerHTML='';
+  
+  products.forEach((p,i)=>{
+    const card=document.createElement('div');
+    card.className='product-card'+(p.rarity===100?' rarity-100':'');
+    card.id='product-'+i;
+    
+    // Calculate average rating
+    const rb=p.ratingBreakdown||{1:0,2:0,3:0,4:0,5:0};
+    const totalRatings=Object.values(rb).reduce((a,b)=>a+b,0);
+    const avgRating=totalRatings>0?Object.entries(rb).reduce((s,[k,v])=>s+parseInt(k)*v,0)/totalRatings:0;
+    const fullStars=Math.round(avgRating);
+    
+    // Get reviews (AI + user)
+    const productId=getProductId(p);
+    const userReviews=(d&&d.userReviews&&d.userReviews[productId])||[];
+    const allReviews=[...(p.reviews||[]),...userReviews];
+    const totalReviews=allReviews.length;
+    
+    // Check if in favorites
+    const isFav=d&&d.favorites&&d.favorites.some(f=>getProductId(f)===productId);
+    
+    // Check if in cart
+    const inCart=d&&d.cart&&d.cart.some(c=>getProductId(c)===productId);
+    
+    card.innerHTML=`
+      <div class="product-image">
+        <span class="missing-icon">🖼️</span>
+        ${p.rarity===100?'<span class="crown">👑</span>':''}
+      </div>
+      <div class="product-body">
+        <div class="product-name">${escapeHtml(p.name)}</div>
+        <div class="product-desc">${escapeHtml(p.description)}</div>
+        <div class="product-price">€${formatPrice(p.price)}</div>
+        <div class="product-rarity">⭐ Σπανιότητα: ${p.rarity}/100</div>
+        <div class="product-stars">
+          ${'★'.repeat(fullStars)}${'☆'.repeat(5-fullStars)}
+          <span style="font-size:0.8rem;color:var(--text-light);margin-left:4px;">(${totalReviews} κριτικές)</span>
+        </div>
+        <div class="product-meta">🛒 ${p.totalPurchases||0} αγορές</div>
+        <div class="product-actions">
+          <button class="btn ${isFav?'btn-fav active':'btn-secondary'}" onclick="toggleFav(${i})">${isFav?'❤️':'🤍'} Αγαπημένα</button>
+          <button class="btn ${inCart?'btn-secondary':'btn-cart'}" onclick="toggleCart(${i})">${inCart?'✅':'🛒'} ${inCart?'Στο καλάθι':'Καλάθι'}</button>
+          <button class="btn btn-buy" onclick="buyNow(${i})">Αγορά τώρα</button>
+        </div>
+        <div class="reviews-section">
+          <h4>💬 Κριτικές (${totalReviews})</h4>
+          ${allReviews.map(r=>`
+            <div class="review-item">
+              <div class="review-header">
+                <span class="review-user">${escapeHtml(r.username)}</span>
+                <span>${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span>
+              </div>
+              <div class="review-text">${escapeHtml(r.text)}</div>
+              <div class="review-date">${r.date||''}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+    
+    // Confetti for rarity > 80
+    if(p.rarity>80)showConfetti();
+    
+    // Rare find notification
+    if(p.rarity>90){
+      setTimeout(()=>{
+        showToast(`🔥 Σπάνιο εύρημα! "${p.name}" (⭐${p.rarity}) θα μπεις στο Hall of Fame;`,'warning');
+        addRareFind(p);
+      },1000);
+    }
+  });
+  
+  showScreen('results');
+}
+
+function getProductId(p){return (p.name||'')+'|'+(p.description||'')+'|'+(p.price||0)}
+function formatPrice(p){return p.toFixed(2).replace('.',',')}
+function escapeHtml(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML}
+
+// ===== FAVORITES =====
+function toggleFav(idx){
+  const card=document.getElementById('product-'+idx);
+  if(!card)return;
+  const name=card.querySelector('.product-name')?.textContent;
+  const desc=card.querySelector('.product-desc')?.textContent;
+  const price=parseFloat(card.querySelector('.product-price')?.textContent?.replace('€','').replace(',','.'));
+  const rarity=parseInt(card.querySelector('.product-rarity')?.textContent?.match(/\d+/)?.[0]);
+  const product={name,description:desc,price,rarity};
+  
+  let d=getData();
+  if(!d)return;
+  const pid=getProductId(product);
+  const existing=d.favorites.findIndex(f=>getProductId(f)===pid);
+  if(existing>=0){
+    d.favorites.splice(existing,1);
+    showToast('💔 Αφαιρέθηκε από αγαπημένα','error');
+  } else {
+    d.favorites.push(product);
+    showToast('❤️ Προστέθηκε στα αγαπημένα!','success');
+  }
+  saveData(d);
+  checkBadges(d);
+  // Re-render
+  const products=getCurrentProducts();
+  if(products)displayResults(products,document.getElementById('resultsTitle').textContent.replace('Αποτελέσματα για: "','').replace('"',''));
+}
+
+// ===== CART =====
+function toggleCart(idx){
+  const card=document.getElementById('product-'+idx);
+  if(!card)return;
+  const name=card.querySelector('.product-name')?.textContent;
+  const desc=card.querySelector('.product-desc')?.textContent;
+  const price=parseFloat(card.querySelector('.product-price')?.textContent?.replace('€','').replace(',','.'));
+  const rarity=parseInt(card.querySelector('.product-rarity')?.textContent?.match(/\d+/)?.[0]);
+  const product={name,description:desc,price,rarity};
+  
+  let d=getData();
+  if(!d)return;
+  const pid=getProductId(product);
+  const existing=d.cart.findIndex(c=>getProductId(c)===pid);
+  if(existing>=0){
+    d.cart.splice(existing,1);
+    showToast('🗑️ Αφαιρέθηκε από το καλάθι','error');
+  } else {
+    d.cart.push(product);
+    showToast('🛒 Προστέθηκε στο καλάθι!','success');
+  }
+  saveData(d);
+  updateCartBadge();
+  const products=getCurrentProducts();
+  if(products)displayResults(products,document.getElementById('resultsTitle').textContent.replace('Αποτελέσματα για: "','').replace('"',''));
+}
+
+function updateCartBadge(){
+  const d=getData();
+  const badge=document.getElementById('cartBadge');
+  if(d&&d.cart&&d.cart.length>0){
+    badge.textContent=d.cart.length;
+    badge.style.display='flex';
+  } else {
+    badge.style.display='none';
+  }
+}
+
+function getCurrentProducts(){
+  const grid=document.getElementById('productsGrid');
+  if(!grid.children.length)return null;
+  const products=[];
+  grid.querySelectorAll('.product-card').forEach(card=>{
+    const name=card.querySelector('.product-name')?.textContent;
+    const desc=card.querySelector('.product-desc')?.textContent;
+    const price=parseFloat(card.querySelector('.product-price')?.textContent?.replace('€','').replace(',','.'));
+    const rarity=parseInt(card.querySelector('.product-rarity')?.textContent?.match(/\d+/)?.[0]);
+    if(name)products.push({name,description:desc,price,rarity});
+  });
+  return products;
+}
+
+// ===== PURCHASE =====
+let lastPurchasedProduct=null;
+
+function buyNow(idx){
+  const card=document.getElementById('product-'+idx);
+  if(!card)return;
+  const name=card.querySelector('.product-name')?.textContent;
+  const desc=card.querySelector('.product-desc')?.textContent;
+  const price=parseFloat(card.querySelector('.product-price')?.textContent?.replace('€','').replace(',','.'));
+  const rarity=parseInt(card.querySelector('.product-rarity')?.textContent?.match(/\d+/)?.[0]);
+  const product={name,description:desc,price,rarity};
+  
+  lastPurchasedProduct=product;
+  document.getElementById('purchaseProductName').textContent=`"${name}" έρχεται... από άλλη διάσταση! 🚀`;
+  document.getElementById('purchaseOverlay').classList.add('active');
+  
+  // Add to purchase history
+  let d=getData();
+  if(d){
+    d.purchaseHistory=d.purchaseHistory||[];
+    d.purchaseHistory.push(product);
+    saveData(d);
+    checkBadges(d);
+  }
+  
+  // Increment total purchases locally
+  showConfetti();
+}
+
+function closePurchase(){
+  document.getElementById('purchaseOverlay').classList.remove('active');
+  lastPurchasedProduct=null;
+}
+
+function closePurchaseAndReview(){
+  document.getElementById('purchaseOverlay').classList.remove('active');
+  if(lastPurchasedProduct)showReviewForm(lastPurchasedProduct);
+  lastPurchasedProduct=null;
+}
+
+// ===== REVIEWS =====
+function showReviewForm(product){
+  const pid=getProductId(product);
+  const modalTitle=document.getElementById('modalTitle');
+  const modalBody=document.getElementById('modalBody');
+  modalTitle.textContent=`✍️ Κριτική για: ${product.name}`;
+  modalBody.innerHTML=`
+    <div class="review-form">
+      <div class="star-selector" id="starSelector">
+        ${[1,2,3,4,5].map(s=>`<span data-star="${s}" onclick="setReviewStar(${s})">☆</span>`).join('')}
+      </div>
+      <textarea id="reviewText" placeholder="Γράψε την κριτική σου..." rows="3"></textarea>
+      <button class="btn btn-primary" onclick="submitReview('${pid}')">Υποβολή ✅</button>
+    </div>
+  `;
+  document.getElementById('modalOverlay').classList.add('active');
+  window._reviewStar=5;
+  setReviewStar(5);
+}
+
+function setReviewStar(s){
+  window._reviewStar=s;
+  document.querySelectorAll('#starSelector span').forEach(el=>{
+    el.textContent=parseInt(el.dataset.star)<=s?'★':'☆';
+  });
+}
+
+function submitReview(pid){
+  const text=document.getElementById('reviewText').value.trim();
+  if(!text)return showToast('⚠️ Γράψε κάτι!','error');
+  const d=getData();
+  if(!d)return;
+  d.userReviews=d.userReviews||{};
+  d.userReviews[pid]=d.userReviews[pid]||[];
+  d.userReviews[pid].push({
+    username:d.user.name,
+    rating:window._reviewStar||5,
+    text:text,
+    date:new Date().toISOString().split('T')[0]
+  });
+  saveData(d);
+  closeModal();
+  showToast('✅ Κριτική προστέθηκε!','success');
+}
+
+// ===== RARE FINDS =====
+function addRareFind(product){
+  if(!product||product.rarity<=90)return;
+  let d=getData();
+  if(!d)return;
+  d.rareFinds=d.rareFinds||[];
+  const pid=getProductId(product);
+  if(!d.rareFinds.some(r=>getProductId(r)===pid)){
+    d.rareFinds.push(product);
+    saveData(d);
+  }
+}
+
+// ===== BADGES =====
+const BADGE_DEFS=[
+  {id:'explorer',name:'Εξερευνητής',icon:'🔍',desc:'Πρώτη αναζήτηση',check:d=>(d.points||0)>=10},
+  {id:'collector',name:'Συλλέκτης',icon:'📦',desc:'500+ πόντοι',check:d=>(d.points||0)>=500},
+  {id:'legend',name:'Θρύλος του O tee mou',icon:'👑',desc:'Βρες rarity 100',check:d=>d.rareFinds&&d.rareFinds.some(r=>r.rarity===100)},
+  {id:'hearts',name:'Καρδούλες',icon:'💖',desc:'5 αγαπημένα',check:d=>d.favorites&&d.favorites.length>=5},
+  {id:'shopaholic',name:'Shopaholic',icon:'🛍️',desc:'3 αγορές',check:d=>d.purchaseHistory&&d.purchaseHistory.length>=3},
+  {id:'hunter',name:'Κυνηγός Σπανίων',icon:'🏆',desc:'3 σπάνια ευρήματα',check:d=>d.rareFinds&&d.rareFinds.length>=3},
+  {id:'hoarder',name:'Μαζεύτρια',icon:'🗄️',desc:'10 στο καλάθι',check:d=>d.cart&&d.cart.length>=10},
+  {id:'reviewer',name:'Κριτικός',icon:'📝',desc:'Γράψε 3 κριτικές',check:d=>{const r=d.userReviews||{};return Object.values(r).reduce((a,b)=>a+b.length,0)>=3}}
+];
+
+function checkBadges(d){
+  if(!d)return;
+  d.badges=d.badges||[];
+  let changed=false;
+  BADGE_DEFS.forEach(b=>{
+    if(!d.badges.includes(b.id)&&b.check(d)){
+      d.badges.push(b.id);
+      changed=true;
+      showToast(`🏅 Νέο badge: ${b.name}!`,'success');
+    }
+  });
+  if(changed)saveData(d);
+}
+
+// ===== LEADERBOARD (AI generated) =====
+async function generateLeaderboard(d){
+  if(d.leaderboard)return; // Already generated
+  const apiKey=d.apiKey||DEFAULT_API_KEY;
+  try {
+    const systemPrompt='Generate a JSON array of 10 fake Greek users with scores for a leaderboard. Respond ONLY with valid JSON array: [{"name":"Μαρία","score":987},...]. Scores 100-1000. Names common Greek first names.';
+    const raw=await callDeepSeek(systemPrompt,'Generate leaderboard',apiKey);
+    const cleaned=raw.replace(/```json?/gi,'').replace(/```/g,'').trim();
+    const lb=JSON.parse(cleaned);
+    if(Array.isArray(lb)&&lb.length>=5){
+      d.leaderboard=lb.slice(0,10);
+      saveData(d);
+    }
+  } catch(e){
+    // Fallback: generate fake leaderboard locally
+    const fallback=['Μαρία','Δημήτρης','Κατερίνα','Γιώργος','Ελένη','Νίκος','Σοφία','Αλέξης','Άννα','Πέτρος'];
+    d.leaderboard=fallback.map((n,i)=>({name:n,score:1000-i*87+Math.floor(Math.random()*50)}));
+    saveData(d);
+  }
+}
+
+// ===== MODALS =====
+function showModal(title,content){
+  document.getElementById('modalTitle').textContent=title;
+  document.getElementById('modalBody').innerHTML=content;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('active');
+}
+
+// ===== PROFILE =====
+function showProfile(){
+  const d=getData();
+  if(!d)return;
+  const badges=d.badges||[];
+  const allBadges=BADGE_DEFS.map(b=>`
+    <div class="badge-item ${badges.includes(b.id)?'unlocked':'locked'}">
+      <span class="badge-icon">${b.icon}</span>
+      <span class="badge-name">${b.name}</span>
+      <span class="badge-desc">${b.desc}</span>
+    </div>
+  `).join('');
+  
+  showModal(`👤 ${d.user.name}`,
+    `<div class="text-center mb-16">
+      <div style="font-size:3rem;">⭐</div>
+      <h3>${d.points||0} πόντοι</h3>
+      <p style="color:var(--text-light);font-size:0.85rem;">Εξερεύνησε για να κερδίσεις περισσότερους!</p>
+    </div>
+    <h3 style="margin-bottom:10px;">🏅 Badges (${badges.length}/${BADGE_DEFS.length})</h3>
+    <div class="badge-grid">${allBadges}</div>
+    <div class="mt-16 flex gap-8" style="flex-wrap:wrap;">
+      <button class="btn btn-secondary btn-small" onclick="showLeaderboard()">🏆 Leaderboard</button>
+      <button class="btn btn-secondary btn-small" onclick="showHallOfFame()">🎖️ Hall of Fame</button>
+      <button class="btn btn-secondary btn-small" onclick="exportData()">📤 Εξαγωγή</button>
+      <button class="btn btn-secondary btn-small" onclick="document.getElementById('importFile').click()">📥 Εισαγωγή</button>
+      <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">
+    </div>`
+  );
+}
+
+// ===== LEADERBOARD VIEW =====
+function showLeaderboard(){
+  const d=getData();
+  if(!d)return;
+  const lb=d.leaderboard||[];
+  const userPoints=d.points||0;
+  
+  // Add user to leaderboard
+  const allEntries=[...lb,{name:d.user.name+' (εσύ)',score:userPoints,isUser:true}];
+  allEntries.sort((a,b)=>b.score-a.score);
+  
+  const items=allEntries.slice(0,15).map((e,i)=>{
+    const rankClass=i===0?'gold':i===1?'silver':i===2?'bronze':'';
+    const isUser=e.isUser;
+    return `<div class="leaderboard-item ${isUser?'current-user':''}">
+      <span class="rank ${rankClass}">${i+1}</span>
+      <span class="lb-name">${e.name}</span>
+      <span class="lb-points">${e.score} πόντοι</span>
+    </div>`;
+  }).join('');
+  
+  showModal('🏆 Top Ευρήματα (Leaderboard)',
+    `<p style="color:var(--text-light);margin-bottom:16px;">Οι κορυφαίοι εξερευνητές του O tee mou!</p>
+    ${items}`
+  );
+}
+
+// ===== HALL OF FAME =====
+function showHallOfFame(){
+  const d=getData();
+  if(!d)return;
+  const rare=d.rareFinds||[];
+  if(!rare.length){
+    showModal('🎖️ Hall of Fame','<p style="color:var(--text-light);">Δεν έχεις βρει ακόμα σπάνια ευρήματα! Συνέχισε να ψάχνεις! 🔍</p>');
+    return;
+  }
+  const items=rare.map(r=>`
+    <div class="hall-item">
+      <div class="trophy">🏆</div>
+      <div class="hall-name">${escapeHtml(r.name)}</div>
+      <div class="hall-rarity">⭐ Σπανιότητα: ${r.rarity}/100</div>
+    </div>
+  `).join('');
+  
+  showModal('🎖️ Hall of Fame','<div class="hall-grid">'+items+'</div>');
+}
+
+// ===== FAVORITES VIEW =====
+function showFavorites(){
+  const d=getData();
+  if(!d||!d.favorites||!d.favorites.length){
+    showModal('❤️ Αγαπημένα','<p style="color:var(--text-light);">Δεν έχεις αγαπημένα ακόμα! Πρόσθεσε με το κουμπί 🤍</p>');
+    return;
+  }
+  const items=d.favorites.map(f=>`
+    <div class="cart-item">
+      <div class="cart-img">🖼️</div>
+      <div class="cart-info">
+        <div class="cart-name">${escapeHtml(f.name)}</div>
+        <div class="cart-price">€${formatPrice(f.price||0)}</div>
+      </div>
+      <button class="cart-remove" onclick="removeFav('${getProductId(f)}')">✕</button>
+    </div>
+  `).join('');
+  showModal('❤️ Αγαπημένα',items);
+}
+
+function removeFav(pid){
+  let d=getData();
+  if(!d)return;
+  d.favorites=d.favorites.filter(f=>getProductId(f)!==pid);
+  saveData(d);
+  showFavorites();
+}
+
+// ===== CART VIEW =====
+function showCart(){
+  const d=getData();
+  if(!d||!d.cart||!d.cart.length){
+    showModal('🛒 Καλάθι','<p style="color:var(--text-light);">Το καλάθι σου είναι άδειο! Ψάξε για απίθανα προϊόντα! 🔍</p>');
+    return;
+  }
+  const total=d.cart.reduce((s,c)=>s+(c.price||0),0);
+  const items=d.cart.map(c=>`
+    <div class="cart-item">
+      <div class="cart-img">🖼️</div>
+      <div class="cart-info">
+        <div class="cart-name">${escapeHtml(c.name)}</div>
+        <div class="cart-price">€${formatPrice(c.price||0)}</div>
+      </div>
+      <button class="cart-remove" onclick="removeFromCart('${getProductId(c)}')">✕</button>
+    </div>
+  `).join('');
+  showModal('🛒 Καλάθι',
+    items+
+    `<div class="mt-16" style="text-align:right;font-size:1.2rem;font-weight:700;">Σύνολο: €${formatPrice(total)}</div>
+    <button class="btn btn-primary mt-16" onclick="checkoutAll()">Αγορά όλων 🎉</button>`
+  );
+}
+
+function removeFromCart(pid){
+  let d=getData();
+  if(!d)return;
+  d.cart=d.cart.filter(c=>getProductId(c)!==pid);
+  saveData(d);
+  updateCartBadge();
+  showCart();
+}
+
+function checkoutAll(){
+  let d=getData();
+  if(!d||!d.cart||!d.cart.length)return;
+  d.purchaseHistory=d.purchaseHistory||[];
+  d.cart.forEach(c=>d.purchaseHistory.push(c));
+  const total=d.cart.reduce((s,c)=>s+(c.price||0),0);
+  d.cart=[];
+  saveData(d);
+  updateCartBadge();
+  closeModal();
+  showConfetti();
+  showToast(`🎉 Αγόρασες τα πάντα! Σύνολο: €${formatPrice(total)} (ψεύτικα, φυσικά!)`,'success');
+  checkBadges(d);
+}
+
+// ===== SETTINGS =====
+function showSettings(){
+  const d=getData();
+  const isDark=d&&d.darkMode;
+  showModal('⚙️ Ρυθμίσεις',`
+    <div class="settings-group">
+      <h3>🔑 API Key</h3>
+      <div class="form-group">
+        <input type="password" id="settingsApiKey" value="${d.apiKey||''}" placeholder="sk-...">
+      </div>
+      <button class="btn btn-secondary btn-small" onclick="saveSettingsApiKey()">Αποθήκευση 💾</button>
+    </div>
+    <div class="settings-group">
+      <h3>🎨 Θέμα</h3>
+      <button class="btn ${isDark?'btn-primary':'btn-secondary'}" onclick="toggleDarkMode()" style="width:100%;">
+        ${isDark?'☀️ Φωτεινή λειτουργία':'🌙 Σκοτεινή λειτουργία'}
+      </button>
+    </div>
+    <div class="settings-group">
+      <h3>🗑️ Δεδομένα</h3>
+      <button class="btn btn-danger" onclick="clearAllData()" style="width:100%;">Διαγραφή όλων των δεδομένων ⚠️</button>
+    </div>
+  `);
+}
+
+function saveSettingsApiKey(){
+  const k=document.getElementById('settingsApiKey').value.trim();
+  if(!k)return showToast('⚠️ Γράψε API key','error');
+  let d=getData();
+  if(d){d.apiKey=k;saveData(d);showToast('✅ Αποθηκεύτηκε!','success')}
+}
+
+function toggleDarkMode(){
+  let d=getData();
+  if(!d)return;
+  d.darkMode=!d.darkMode;
+  saveData(d);
+  if(d.darkMode)document.documentElement.setAttribute('data-theme','dark');
+  else document.documentElement.removeAttribute('data-theme');
+  showSettings();
+}
+
+function clearAllData(){
+  if(!confirm('Σίγουρα θέλεις να διαγράψεις όλα τα δεδομένα; Αυτή η ενέργεια είναι μη αναστρέψιμη!'))return;
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(CACHE_KEY);
+  location.reload();
+}
+
+// ===== EXPORT / IMPORT =====
+function exportData(){
+  const d=getData();
+  if(!d)return;
+  const blob=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='oteemou_backup.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📤 Δεδομένα εξήχθησαν!','success');
+}
+
+function importData(event){
+  const file=event.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try {
+      const data=JSON.parse(e.target.result);
+      if(!data.user)throw new Error('Invalid data');
+      if(!confirm('Αυτό θα αντικαταστήσει όλα τα τρέχοντα δεδομένα. Συνέχεια;'))return;
+      saveData(data);
+      showToast('📥 Δεδομένα εισήχθησαν!','success');
+      setTimeout(()=>location.reload(),1000);
+    } catch(err){
+      showToast('❌ Μη έγκυρο αρχείο!','error');
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ===== UI HELPERS =====
+function showLoading(show){
+  document.getElementById('loadingOverlay').classList.toggle('active',show);
+}
+
+function showToast(msg,type=''){
+  const container=document.getElementById('toastContainer');
+  const toast=document.createElement('div');
+  toast.className='toast '+(type||'');
+  toast.textContent=msg;
+  container.appendChild(toast);
+  setTimeout(()=>{toast.style.opacity='0';setTimeout(()=>toast.remove(),300)},3000);
+}
+
+function showConfetti(){
+  const container=document.getElementById('confettiContainer');
+  const colors=['#FF6B35','#7B2D8E','#FFD700','#2ECC71','#E74C3C','#3498DB'];
+  for(let i=0;i<50;i++){
+    const piece=document.createElement('div');
+    piece.className='confetti-piece';
+    piece.style.left=Math.random()*100+'%';
+    piece.style.background=colors[Math.floor(Math.random()*colors.length)];
+    piece.style.width=(Math.random()*8+4)+'px';
+    piece.style.height=(Math.random()*8+4)+'px';
+    piece.style.borderRadius=Math.random()>0.5?'50%':'0';
+    piece.style.animationDuration=(Math.random()*2+1)+'s';
+    piece.style.animationDelay=Math.random()*0.5+'s';
+    container.appendChild(piece);
+    setTimeout(()=>piece.remove(),3000);
+  }
+}
+
+// ===== INIT ON LOAD =====
+document.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>

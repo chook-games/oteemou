@@ -6,106 +6,222 @@
 <title>O tee mou - Ψάξε το απίθανο</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <!-- SETUP SCREEN -->
-<div id="setupScreen" class="screen setup-container">
-  <div class="setup-card">
+<div id="setupScreen" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#FF8F5E,#9B4DBA);">
+  <div style="background:#fff;border-radius:16px;padding:40px 32px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(123,45,142,0.15);text-align:center;">
     <div style="font-size:3rem;margin-bottom:8px;">🛒</div>
-    <h1>O tee mou</h1>
-    <p class="tagline">Ψάξε το απίθανο ✨</p>
-    <div style="display:flex;gap:0;margin-bottom:20px;border-radius:var(--radius-sm);overflow:hidden;border:2px solid var(--border);">
-      <button id="loginTabBtn" class="btn" style="flex:1;border-radius:0;background:var(--purple);color:#fff;" onclick="switchAuthTab('login')">Σύνδεση</button>
-      <button id="signupTabBtn" class="btn" style="flex:1;border-radius:0;background:var(--bg);color:var(--text);" onclick="switchAuthTab('signup')">Εγγραφή</button>
+    <h1 style="font-size:2.2rem;background:linear-gradient(135deg,#FF6B35,#7B2D8E);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px;">O tee mou</h1>
+    <p style="color:#6B5B7B;margin-bottom:24px;font-size:0.95rem;">Ψάξε το απίθανο ✨</p>
+
+    <div style="display:flex;gap:0;margin-bottom:20px;border-radius:10px;overflow:hidden;border:2px solid #FFD4B8;">
+      <button id="loginTabBtn" style="flex:1;padding:12px;border:none;font-family:'Fredoka',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;background:#7B2D8E;color:#fff;" onclick="switchAuthTab('login')">Σύνδεση</button>
+      <button id="signupTabBtn" style="flex:1;padding:12px;border:none;font-family:'Fredoka',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;" onclick="switchAuthTab('signup')">Εγγραφή</button>
     </div>
+
     <div id="loginForm">
-      <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="π.χ. giannis@example.com"></div>
-      <div class="form-group"><label>Κωδικός</label><input type="password" id="loginPassword" placeholder="Ο κωδικός σου"></div>
-      <button class="btn btn-primary" onclick="handleLogin()">Σύνδεση 🚀</button>
+      <div style="margin-bottom:16px;text-align:left;">
+        <label style="display:block;font-weight:500;margin-bottom:4px;font-size:0.85rem;color:#6B5B7B;">Email</label>
+        <input type="email" id="loginEmail" placeholder="π.χ. giannis@example.com" style="width:100%;padding:12px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:'Fredoka',sans-serif;font-size:0.95rem;background:#FFF8F0;color:#2D1B3D;box-sizing:border-box;">
+      </div>
+      <div style="margin-bottom:16px;text-align:left;">
+        <label style="display:block;font-weight:500;margin-bottom:4px;font-size:0.85rem;color:#6B5B7B;">Κωδικός</label>
+        <input type="password" id="loginPassword" placeholder="Ο κωδικός σου" style="width:100%;padding:12px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:'Fredoka',sans-serif;font-size:0.95rem;background:#FFF8F0;color:#2D1B3D;box-sizing:border-box;">
+      </div>
+      <button onclick="handleLogin()" style="width:100%;padding:12px 28px;border:none;border-radius:10px;font-family:'Fredoka',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;background:linear-gradient(135deg,#FF6B35,#7B2D8E);color:#fff;">Σύνδεση 🚀</button>
     </div>
+
     <div id="signupForm" style="display:none;">
-      <div class="form-group"><label>Όνομα</label><input type="text" id="signupName" placeholder="π.χ. Γιάννης"></div>
-      <div class="form-group"><label>Email</label><input type="email" id="signupEmail" placeholder="π.χ. giannis@example.com"></div>
-      <div class="form-group"><label>Κωδικός</label><input type="password" id="signupPassword" placeholder="Επίλεξε έναν κωδικό"></div>
-      <div class="disclaimer">⚠️ Πρόκειται για ψεύτικη σύνδεση, μην χρησιμοποιήσεις πραγματικό κωδικό.</div>
-      <button class="btn btn-primary mt-16" onclick="handleSignup()">Εγγραφή 🎉</button>
+      <div style="margin-bottom:16px;text-align:left;">
+        <label style="display:block;font-weight:500;margin-bottom:4px;font-size:0.85rem;color:#6B5B7B;">Όνομα</label>
+        <input type="text" id="signupName" placeholder="π.χ. Γιάννης" style="width:100%;padding:12px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:'Fredoka',sans-serif;font-size:0.95rem;background:#FFF8F0;color:#2D1B3D;box-sizing:border-box;">
+      </div>
+      <div style="margin-bottom:16px;text-align:left;">
+        <label style="display:block;font-weight:500;margin-bottom:4px;font-size:0.85rem;color:#6B5B7B;">Email</label>
+        <input type="email" id="signupEmail" placeholder="π.χ. giannis@example.com" style="width:100%;padding:12px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:'Fredoka',sans-serif;font-size:0.95rem;background:#FFF8F0;color:#2D1B3D;box-sizing:border-box;">
+      </div>
+      <div style="margin-bottom:16px;text-align:left;">
+        <label style="display:block;font-weight:500;margin-bottom:4px;font-size:0.85rem;color:#6B5B7B;">Κωδικός</label>
+        <input type="password" id="signupPassword" placeholder="Επίλεξε έναν κωδικό" style="width:100%;padding:12px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:'Fredoka',sans-serif;font-size:0.95rem;background:#FFF8F0;color:#2D1B3D;box-sizing:border-box;">
+      </div>
+      <div style="font-size:0.75rem;color:#6B5B7B;margin-top:16px;padding:10px;background:#FFF3CD;border-radius:10px;color:#856404;">⚠️ Πρόκειται για ψεύτικη σύνδεση, μην χρησιμοποιήσεις πραγματικό κωδικό.</div>
+      <button onclick="handleSignup()" style="width:100%;padding:12px 28px;border:none;border-radius:10px;font-family:'Fredoka',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;background:linear-gradient(135deg,#FF6B35,#7B2D8E);color:#fff;margin-top:16px;">Εγγραφή 🎉</button>
     </div>
-    <div id="apiKeySection" style="margin-top:20px;padding-top:20px;border-top:2px solid var(--border);">
-      <p style="font-size:.85rem;color:var(--text-light);margin-bottom:10px;">🔑 API Key DeepSeek (προαιρετικό, υπάρχει default)</p>
-      <div class="form-group"><input type="password" id="apiKeyInput" placeholder="sk-..."></div>
-      <button class="btn btn-secondary btn-small" onclick="saveApiKey()">Αποθήκευση 💾</button>
+
+    <div style="margin-top:20px;padding-top:20px;border-top:2px solid #FFD4B8;">
+      <p style="font-size:.85rem;color:#6B5B7B;margin-bottom:10px;">🔑 API Key DeepSeek (προαιρετικό)</p>
+      <div style="margin-bottom:16px;text-align:left;">
+        <input type="password" id="apiKeyInput" placeholder="sk-..." style="width:100%;padding:12px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:'Fredoka',sans-serif;font-size:0.95rem;background:#FFF8F0;color:#2D1B3D;box-sizing:border-box;">
+      </div>
+      <button onclick="saveApiKey()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:'Fredoka',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">Αποθήκευση 💾</button>
     </div>
   </div>
 </div>
 
 <!-- MAIN APP -->
-<div id="appScreen" class="screen">
-  <header class="header">
-    <a class="header-logo" onclick="showScreen('home')"><span>🛒</span><span>O tee mou</span></a>
-    <div class="header-actions">
-      <span class="user-name-display" id="headerUserName"></span>
-      <button class="header-btn" onclick="showFavorites()" title="Αγαπημένα">❤️</button>
-      <button class="header-btn" onclick="showCart()" title="Καλάθι">🛒<span class="cart-badge" id="cartBadge" style="display:none;">0</span></button>
-      <button class="header-btn" onclick="showProfile()" title="Προφίλ">👤</button>
-      <button class="header-btn" onclick="showSettings()" title="Ρυθμίσεις">⚙️</button>
+<div id="appScreen" style="display:none;">
+  <header style="position:sticky;top:0;z-index:100;background:linear-gradient(135deg,#FF6B35,#7B2D8E);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 20px rgba(123,45,142,0.15);">
+    <div style="display:flex;align-items:center;gap:10px;cursor:pointer;color:#fff;font-size:1.5rem;font-weight:700;" onclick="showScreen('home')">
+      <span>🛒</span><span>O tee mou</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span id="headerUserName" style="color:#fff;font-weight:500;font-size:0.9rem;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+      <button onclick="showFavorites()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;">❤️</button>
+      <button onclick="showCart()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;position:relative;">
+        🛒<span id="cartBadge" style="position:absolute;top:-4px;right:-4px;background:#E74C3C;color:#fff;font-size:0.65rem;font-weight:700;width:20px;height:20px;border-radius:50%;display:none;align-items:center;justify-content:center;font-family:'Fredoka',sans-serif;">0</span>
+      </button>
+      <button onclick="showProfile()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;">👤</button>
+      <button onclick="showSettings()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;">⚙️</button>
     </div>
   </header>
-  <div id="homeScreen" class="screen homepage active">
-    <div class="logo-big">🛒</div>
-    <h1>O tee mou</h1>
-    <p class="tagline">Ψάξε το απίθανο ✨</p>
-    <div class="search-container">
-      <input type="text" class="search-bar" id="searchInput" placeholder="Τι απίθανο ψάχνεις σήμερα;" autocomplete="off" onkeydown="if(event.key==='Enter') doSearch()">
-      <button class="search-btn" onclick="doSearch()">🔍</button>
+
+  <div id="homeScreen" style="min-height:calc(100vh - 64px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;text-align:center;">
+    <div style="font-size:4rem;margin-bottom:8px;">🛒</div>
+    <h1 style="font-size:3rem;background:linear-gradient(135deg,#FF6B35,#7B2D8E);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px;">O tee mou</h1>
+    <p style="font-size:1.2rem;color:#6B5B7B;margin-bottom:32px;">Ψάξε το απίθανο ✨</p>
+    <div style="width:100%;max-width:600px;position:relative;">
+      <input type="text" id="searchInput" placeholder="Τι απίθανο ψάχνεις σήμερα;" autocomplete="off" onkeydown="if(event.key==='Enter') doSearch()" style="width:100%;padding:16px 20px;padding-right:60px;border:3px solid #FFD4B8;border-radius:50px;font-family:'Fredoka',sans-serif;font-size:1.1rem;background:#fff;color:#2D1B3D;box-shadow:0 4px 20px rgba(123,45,142,0.15);box-sizing:border-box;">
+      <button onclick="doSearch()" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);background:linear-gradient(135deg,#FF6B35,#7B2D8E);border:none;color:#fff;width:46px;height:46px;border-radius:50%;cursor:pointer;font-size:1.2rem;">🔍</button>
     </div>
-    <div class="recent-section">
-      <h3>🔥 Πρόσφατες ανακαλύψεις άλλων χρηστών</h3>
-      <div class="recent-list" id="recentList"></div>
+    <div style="margin-top:48px;width:100%;max-width:700px;">
+      <h3 style="font-size:1rem;color:#6B5B7B;margin-bottom:12px;">🔥 Πρόσφατες ανακαλύψεις άλλων χρηστών</h3>
+      <div id="recentList" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;"></div>
     </div>
   </div>
-  <div id="resultsScreen" class="screen">
-    <div class="results-container">
-      <div class="results-header">
-        <h2 id="resultsTitle">Αποτελέσματα</h2>
-        <span class="points-earned" id="pointsEarned">+0 πόντοι</span>
+
+  <div id="resultsScreen" style="display:none;">
+    <div style="max-width:1200px;margin:0 auto;padding:24px 20px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
+        <h2 id="resultsTitle" style="font-size:1.3rem;">Αποτελέσματα</h2>
+        <span id="pointsEarned" style="background:#FFD700;color:#333;padding:6px 16px;border-radius:50px;font-weight:600;font-size:0.9rem;">+0 πόντοι</span>
       </div>
-      <div class="products-grid" id="productsGrid"></div>
+      <div id="productsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;"></div>
     </div>
   </div>
 </div>
 
 <!-- LOADING -->
-<div class="loading-overlay" id="loadingOverlay">
-  <div class="spinner"><div class="spinner-icon"></div><p>🔮 Ο αλγόριθμος ψάχνει για απίθανα προϊόντα...</p></div>
+<div id="loadingOverlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(4px);">
+  <div style="background:#fff;border-radius:16px;padding:40px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div style="width:60px;height:60px;border:5px solid #FFD4B8;border-top-color:#7B2D8E;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>
+    <p style="color:#6B5B7B;font-size:0.9rem;">🔮 Ο αλγόριθμος ψάχνει για απίθανα προϊόντα...</p>
+  </div>
 </div>
 
 <!-- PURCHASE SUCCESS -->
-<div class="purchase-overlay" id="purchaseOverlay">
-  <div class="purchase-success">
-    <div class="big-icon">🎉</div>
-    <h2>Αγορά ολοκληρώθηκε!</h2>
-    <p id="purchaseProductName">Το προϊόν σου έρχεται... από άλλη διάσταση! 🚀</p>
-    <button class="btn btn-primary" onclick="closePurchase()">Τέλεια! ✅</button>
-    <button class="btn btn-secondary mt-8" onclick="closePurchaseAndReview()" style="width:100%;">Γράψε μια κριτική ✍️</button>
+<div id="purchaseOverlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:600;">
+  <div style="background:#fff;border-radius:16px;padding:40px;text-align:center;max-width:400px;animation:modalIn 0.5s ease;">
+    <div style="font-size:4rem;margin-bottom:16px;">🎉</div>
+    <h2 style="margin-bottom:8px;">Αγορά ολοκληρώθηκε!</h2>
+    <p id="purchaseProductName" style="color:#6B5B7B;margin-bottom:20px;">Το προϊόν σου έρχεται... από άλλη διάσταση! 🚀</p>
+    <button onclick="closePurchase()" style="width:100%;padding:12px 28px;border:none;border-radius:10px;font-family:'Fredoka',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;background:linear-gradient(135deg,#FF6B35,#7B2D8E);color:#fff;">Τέλεια! ✅</button>
+    <button onclick="closePurchaseAndReview()" style="width:100%;padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:'Fredoka',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;margin-top:8px;">Γράψε μια κριτική ✍️</button>
   </div>
 </div>
 
 <!-- CONFETTI -->
-<div class="confetti-container" id="confettiContainer"></div>
+<div id="confettiContainer" style="position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:400;overflow:hidden;"></div>
 
 <!-- TOASTS -->
-<div class="toast-container" id="toastContainer"></div>
+<div id="toastContainer" style="position:fixed;bottom:20px;right:20px;z-index:500;display:flex;flex-direction:column;gap:8px;"></div>
 
 <!-- MODAL -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
-    <div class="modal-header"><h2 id="modalTitle">Modal</h2><button class="modal-close" onclick="closeModal()">✕</button></div>
-    <div class="modal-body" id="modalBody"></div>
+<div id="modalOverlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:300;backdrop-filter:blur(4px);padding:20px;">
+  <div style="background:#fff;border-radius:16px;max-width:500px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:modalIn 0.3s ease;">
+    <div style="padding:20px 24px;border-bottom:2px solid #FFD4B8;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1;">
+      <h2 id="modalTitle" style="font-size:1.2rem;">Modal</h2>
+      <button onclick="closeModal()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#6B5B7B;">✕</button>
+    </div>
+    <div id="modalBody" style="padding:20px 24px;"></div>
   </div>
 </div>
+
+<style>
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes modalIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes confettiFall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+.confetti-piece { position: absolute; width: 10px; height: 10px; top: -10px; animation: confettiFall linear forwards; }
+.toast { background: #fff; border-radius: 10px; padding: 14px 20px; box-shadow: 0 8px 30px rgba(123,45,142,0.15); border-left: 4px solid #7B2D8E; animation: toastIn 0.3s ease; max-width: 350px; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; }
+.toast.success { border-left-color: #2ECC71; }
+.toast.error { border-left-color: #E74C3C; }
+.toast.warning { border-left-color: #FFD700; }
+@keyframes toastIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+.product-card { background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(123,45,142,0.15); transition: all 0.3s ease; border: 2px solid transparent; position: relative; }
+.product-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(123,45,142,0.15); border-color: #9B4DBA; }
+.product-card.rarity-100 { border-color: #FFD700; animation: glowPulse 2s infinite; }
+@keyframes glowPulse { 0%,100% { box-shadow: 0 0 10px rgba(255,215,0,0.3); } 50% { box-shadow: 0 0 25px rgba(255,215,0,0.6); } }
+.product-image { width: 100%; height: 200px; background: linear-gradient(135deg,#E0D0E8,#FFD4B8); display: flex; align-items: center; justify-content: center; font-size: 3rem; color: #6B5B7B; position: relative; overflow: hidden; }
+.product-body { padding: 16px; }
+.product-name { font-size: 1.1rem; font-weight: 600; margin-bottom: 6px; line-height: 1.3; }
+.product-desc { font-size: 0.85rem; color: #6B5B7B; margin-bottom: 12px; line-height: 1.4; }
+.product-price { font-size: 1.5rem; font-weight: 700; color: #FF6B35; margin-bottom: 8px; }
+.product-rarity { display: inline-flex; align-items: center; gap: 4px; background: linear-gradient(135deg,#FFD700,#FFA500); color: #333; padding: 4px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; margin-bottom: 10px; }
+.product-stars { display: flex; align-items: center; gap: 4px; margin-bottom: 4px; font-size: 0.9rem; }
+.stars-filled { color: #FFD700; }
+.stars-empty { color: #DDD; }
+.product-meta { font-size: 0.8rem; color: #6B5B7B; margin-bottom: 12px; }
+.product-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.product-actions button { flex: 1; justify-content: center; font-size: 0.8rem; padding: 10px 12px; min-width: 0; border-radius: 10px; font-family: 'Fredoka', sans-serif; font-weight: 600; cursor: pointer; border: none; transition: all 0.3s ease; }
+.btn-fav { background: #FFF8F0; color: #2D1B3D; border: 2px solid #FFD4B8; }
+.btn-fav.active { background: #FFE0E0; color: #E74C3C; border-color: #E74C3C; }
+.btn-cart { background: #7B2D8E; color: #fff; }
+.btn-cart:hover { background: #5C1F6E; }
+.btn-buy { background: #FF6B35; color: #fff; }
+.btn-buy:hover { background: #E55A2B; }
+.reviews-section { margin-top: 16px; border-top: 2px solid #FFD4B8; padding-top: 12px; }
+.reviews-section h4 { font-size: 0.9rem; margin-bottom: 8px; color: #6B5B7B; }
+.review-item { background: #FFF8F0; border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; font-size: 0.8rem; }
+.review-item .review-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.review-item .review-user { font-weight: 600; }
+.review-item .review-date { font-size: 0.7rem; color: #6B5B7B; }
+.review-item .review-text { color: #6B5B7B; line-height: 1.3; }
+.review-form { margin-top: 8px; display: flex; flex-direction: column; gap: 8px; }
+.review-form textarea { width: 100%; padding: 10px; border: 2px solid #FFD4B8; border-radius: 10px; font-family: 'Fredoka', sans-serif; font-size: 0.85rem; resize: vertical; min-height: 60px; background: #FFF8F0; color: #2D1B3D; box-sizing: border-box; }
+.star-selector { display: flex; gap: 4px; font-size: 1.3rem; cursor: pointer; }
+.star-selector span { cursor: pointer; transition: transform 0.3s ease; }
+.star-selector span:hover { transform: scale(1.2); }
+.badge-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+.badge-item { background: #FFF8F0; border-radius: 10px; padding: 12px 16px; text-align: center; flex: 1; min-width: 100px; border: 2px solid #FFD4B8; transition: all 0.3s ease; }
+.badge-item.locked { opacity: 0.4; filter: grayscale(1); }
+.badge-item.unlocked { border-color: #FFD700; background: linear-gradient(135deg,#FFF8E0,#FFF0C0); }
+.badge-item .badge-icon { font-size: 2rem; display: block; margin-bottom: 4px; }
+.badge-item .badge-name { font-size: 0.8rem; font-weight: 600; }
+.badge-item .badge-desc { font-size: 0.7rem; color: #6B5B7B; }
+.leaderboard-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; margin-bottom: 8px; background: #FFF8F0; transition: all 0.3s ease; }
+.leaderboard-item.current-user { background: linear-gradient(135deg,#FF8F5E,#9B4DBA); color: #fff; }
+.leaderboard-item .rank { font-size: 1.2rem; font-weight: 700; width: 30px; text-align: center; }
+.leaderboard-item .rank.gold { color: #FFD700; }
+.leaderboard-item .rank.silver { color: #C0C0C0; }
+.leaderboard-item .rank.bronze { color: #CD7F32; }
+.leaderboard-item .lb-name { flex: 1; font-weight: 500; }
+.leaderboard-item .lb-points { font-weight: 700; color: #7B2D8E; }
+.leaderboard-item.current-user .lb-points { color: #fff; }
+.hall-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(200px,1fr)); gap: 16px; }
+.hall-item { background: linear-gradient(135deg,#FFF8E0,#FFE0B0); border-radius: 16px; padding: 20px; text-align: center; border: 2px solid #FFD700; }
+.hall-item .trophy { font-size: 3rem; }
+.hall-item .hall-name { font-size: 0.9rem; font-weight: 600; margin: 8px 0 4px; }
+.hall-item .hall-rarity { font-size: 0.8rem; color: #6B5B7B; }
+.cart-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid #FFD4B8; align-items: center; }
+.cart-item:last-child { border-bottom: none; }
+.cart-item .cart-img { width: 60px; height: 60px; background: linear-gradient(135deg,#E0D0E8,#FFD4B8); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+.cart-item .cart-info { flex: 1; }
+.cart-item .cart-name { font-weight: 600; font-size: 0.9rem; }
+.cart-item .cart-price { color: #FF6B35; font-weight: 600; }
+.cart-item .cart-remove { background: none; border: none; color: #E74C3C; cursor: pointer; font-size: 1.2rem; }
+.settings-group { margin-bottom: 20px; }
+.settings-group h3 { font-size: 1rem; margin-bottom: 10px; color: #6B5B7B; }
+@media (max-width:600px) {
+  header { padding: 10px 16px !important; }
+  header > div:first-child { font-size: 1.2rem !important; }
+  .homepage h1 { font-size: 2rem !important; }
+  .homepage .logo-big { font-size: 3rem !important; }
+  #productsGrid { grid-template-columns: 1fr !important; }
+  .modal { max-width: 100% !important; margin: 10px !important; }
+}
+</style>
 
 <script src="app.js"></script>
 </body>

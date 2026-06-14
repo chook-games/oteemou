@@ -1,7 +1,9 @@
 /* ============================================================
    JAVASCRIPT - O tee mou Complete Application
-   Parody e-commerce site (Temu parody: Orange + Purple + Chaos)
+   Parody e-commerce site (Temu parody)
    ============================================================ */
+
+'use strict';
 
 const DEFAULT_API_KEY = '__DEEPSEEK_API_KEY__';
 const STORAGE_KEY = 'oteemou_data';
@@ -14,7 +16,9 @@ function getData() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) return JSON.parse(raw);
-  } catch (e) {}
+  } catch (e) {
+    console.error('getData error:', e);
+  }
   return null;
 }
 
@@ -22,7 +26,7 @@ function saveData(d) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
   } catch (e) {
-    showToast('⚠️ Πρόβλημα με την αποθήκευση.', 'error');
+    console.error('saveData error:', e);
   }
 }
 
@@ -59,6 +63,7 @@ function getDefaultData() {
 // ===== INITIALIZATION =====
 
 function init() {
+  console.log('init() called');
   let d = getData() || getDefaultData();
   if (!getData()) saveData(d);
 
@@ -67,9 +72,11 @@ function init() {
   }
 
   if (d.user) {
+    console.log('User found, calling showApp()');
     showApp();
   } else {
-    document.getElementById('setupScreen').classList.add('active');
+    console.log('No user, showing setup');
+    document.getElementById('setupScreen').style.display = 'flex';
   }
 
   if (d.apiKey && d.apiKey !== DEFAULT_API_KEY) {
@@ -82,6 +89,7 @@ function init() {
 // ===== AUTH =====
 
 function switchAuthTab(tab) {
+  console.log('switchAuthTab:', tab);
   const loginForm = document.getElementById('loginForm');
   const signupForm = document.getElementById('signupForm');
   const loginBtn = document.getElementById('loginTabBtn');
@@ -90,102 +98,118 @@ function switchAuthTab(tab) {
   if (tab === 'login') {
     loginForm.style.display = 'block';
     signupForm.style.display = 'none';
-    loginBtn.style.background = 'var(--purple)';
+    loginBtn.style.background = '#7B2D8E';
     loginBtn.style.color = '#fff';
-    signupBtn.style.background = 'var(--bg)';
-    signupBtn.style.color = 'var(--text)';
+    signupBtn.style.background = '#FFF8F0';
+    signupBtn.style.color = '#2D1B3D';
   } else {
     signupForm.style.display = 'block';
     loginForm.style.display = 'none';
-    signupBtn.style.background = 'var(--purple)';
+    signupBtn.style.background = '#7B2D8E';
     signupBtn.style.color = '#fff';
-    loginBtn.style.background = 'var(--bg)';
-    loginBtn.style.color = 'var(--text)';
+    loginBtn.style.background = '#FFF8F0';
+    loginBtn.style.color = '#2D1B3D';
   }
 }
 
 function handleSignup() {
+  console.log('handleSignup() called');
   const name = document.getElementById('signupName').value.trim();
   const email = document.getElementById('signupEmail').value.trim();
   const password = document.getElementById('signupPassword').value.trim();
 
   if (!name || !email || !password) {
-    return showToast('⚠️ Συμπλήρωσε όλα τα πεδία!', 'error');
+    showToast('\u26a0\ufe0f \u03a3\u03c5\u03bc\u03c0\u03bb\u03ae\u03c1\u03c9\u03c3\u03b5 \u03cc\u03bb\u03b1 \u03c4\u03b1 \u03c0\u03b5\u03b4\u03af\u03b1!', 'error');
+    return;
   }
 
   let d = getData() || getDefaultData();
   d.user = { name: name, email: email, password: password };
   saveData(d);
+  console.log('User saved:', d.user);
 
-  // Generate leaderboard via AI in background - show app immediately
+  // Generate leaderboard in background
   generateLeaderboard(d);
+
+  // Show app IMMEDIATELY
   showApp();
 }
 
 function handleLogin() {
+  console.log('handleLogin() called');
   const email = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value.trim();
 
   if (!email || !password) {
-    return showToast('⚠️ Συμπλήρωσε email και κωδικό!', 'error');
+    showToast('\u26a0\ufe0f \u03a3\u03c5\u03bc\u03c0\u03bb\u03ae\u03c1\u03c9\u03c3\u03b5 email \u03ba\u03b1\u03b9 \u03ba\u03c9\u03b4\u03b9\u03ba\u03cc!', 'error');
+    return;
   }
 
   let d = getData();
   if (!d || !d.user || d.user.email !== email || d.user.password !== password) {
-    return showToast('❌ Λάθος email ή κωδικός!', 'error');
+    showToast('\u274c \u039b\u03ac\u03b8\u03bf\u03c2 email \u03ae \u03ba\u03c9\u03b4\u03b9\u03ba\u03cc\u03c2!', 'error');
+    return;
   }
 
+  console.log('Login successful');
   showApp();
 }
 
 function saveApiKey() {
   const key = document.getElementById('apiKeyInput').value.trim();
-  if (!key) return showToast('⚠️ Γράψε ένα API key', 'error');
+  if (!key) return showToast('\u26a0\ufe0f \u0393\u03c1\u03ac\u03c8\u03b5 \u03ad\u03bd\u03b1 API key', 'error');
 
   let d = getData() || getDefaultData();
   d.apiKey = key;
   saveData(d);
-  showToast('✅ API key αποθηκεύτηκε!', 'success');
+  showToast('\u2705 API key \u03b1\u03c0\u03bf\u03b8\u03b7\u03ba\u03b5\u03cd\u03c4\u03b7\u03ba\u03b5!', 'success');
 }
 
 function showApp() {
-  document.getElementById('setupScreen').classList.remove('active');
-  document.getElementById('appScreen').classList.add('active');
+  console.log('showApp() called');
+  // Hide setup
+  document.getElementById('setupScreen').style.display = 'none';
+  // Show app
+  document.getElementById('appScreen').style.display = 'block';
 
   const d = getData();
   if (d && d.user) {
     document.getElementById('headerUserName').textContent = d.user.name;
   }
   updateCartBadge();
+  console.log('showApp() completed');
 }
 
 function showScreen(screen) {
-  document.querySelectorAll('#appScreen .screen').forEach(function(el) {
-    el.classList.remove('active');
-  });
+  console.log('showScreen:', screen);
+  const home = document.getElementById('homeScreen');
+  const results = document.getElementById('resultsScreen');
 
   if (screen === 'home') {
-    document.getElementById('homeScreen').classList.add('active');
+    home.style.display = 'flex';
+    results.style.display = 'none';
   } else if (screen === 'results') {
-    document.getElementById('resultsScreen').classList.add('active');
+    home.style.display = 'none';
+    results.style.display = 'block';
   }
 }
 
 // ===== RECENT DISCOVERIES =====
 
-const FAKE_USERS = ['Μαρία', 'Δημήτρης', 'Κατερίνα', 'Γιώργος', 'Ελένη', 'Νίκος', 'Σοφία', 'Αλέξης', 'Άννα', 'Πέτρος'];
+const FAKE_USERS = ['\u039c\u03b1\u03c1\u03af\u03b1', '\u0394\u03b7\u03bc\u03ae\u03c4\u03c1\u03b7\u03c2', '\u039a\u03b1\u03c4\u03b5\u03c1\u03af\u03bd\u03b1', '\u0393\u03b9\u03ce\u03c1\u03b3\u03bf\u03c2', '\u0395\u03bb\u03ad\u03bd\u03b7', '\u039d\u03af\u03ba\u03bf\u03c2', '\u03a3\u03bf\u03c6\u03af\u03b1', '\u0391\u03bb\u03ad\u03be\u03b7\u03c2', '\u0386\u03bd\u03bd\u03b1', '\u03a0\u03ad\u03c4\u03c1\u03bf\u03c2'];
 
 const FAKE_DISCOVERIES = [
-  { name: 'Αόρατο καπέλο για γάτες', rarity: 92 },
-  { name: 'Νερό σε σκόνη', rarity: 45 },
-  { name: 'Πιρούνι που τραγουδάει', rarity: 78 },
-  { name: 'Χαλί που πετάει (με ζώνη ασφαλείας)', rarity: 88 },
-  { name: 'Κουτάλι που μετράει θερμίδες', rarity: 55 },
-  { name: 'Ψηφιακό κατοικίδιο-πίτσα', rarity: 97 }
+  { name: '\u0391\u03cc\u03c1\u03b1\u03c4\u03bf \u03ba\u03b1\u03c0\u03ad\u03bb\u03bf \u03b3\u03b9\u03b1 \u03b3\u03ac\u03c4\u03b5\u03c2', rarity: 92 },
+  { name: '\u039d\u03b5\u03c1\u03cc \u03c3\u03b5 \u03c3\u03ba\u03cc\u03bd\u03b7', rarity: 45 },
+  { name: '\u03a0\u03b9\u03c1\u03bf\u03cd\u03bd\u03b9 \u03c0\u03bf\u03c5 \u03c4\u03c1\u03b1\u03b3\u03bf\u03c5\u03b4\u03ac\u03b5\u03b9', rarity: 78 },
+  { name: '\u03a7\u03b1\u03bb\u03af \u03c0\u03bf\u03c5 \u03c0\u03b5\u03c4\u03ac\u03b5\u03b9 (\u03bc\u03b5 \u03b6\u03ce\u03bd\u03b7 \u03b1\u03c3\u03c6\u03b1\u03bb\u03b5\u03af\u03b1\u03c2)', rarity: 88 },
+  { name: '\u039a\u03bf\u03c5\u03c4\u03ac\u03bb\u03b9 \u03c0\u03bf\u03c5 \u03bc\u03b5\u03c4\u03c1\u03ac\u03b5\u03b9 \u03b8\u03b5\u03c1\u03bc\u03af\u03b4\u03b5\u03c2', rarity: 55 },
+  { name: '\u03a8\u03b7\u03c6\u03b9\u03b1\u03ba\u03cc \u03ba\u03b1\u03c4\u03bf\u03b9\u03ba\u03af\u03b4\u03b9\u03bf-\u03c0\u03af\u03c4\u03c3\u03b1', rarity: 97 }
 ];
 
 function generateRecentDiscoveries() {
   const list = document.getElementById('recentList');
+  if (!list) return;
   list.innerHTML = '';
 
   const shuffled = [...FAKE_DISCOVERIES].sort(function() {
@@ -194,8 +218,8 @@ function generateRecentDiscoveries() {
 
   shuffled.forEach(function(d, i) {
     const tag = document.createElement('span');
-    tag.className = 'recent-tag';
-    tag.innerHTML = FAKE_USERS[i % FAKE_USERS.length] + ' βρήκε: "' + d.name + '" <span class="rarity-badge">⭐' + d.rarity + '</span>';
+    tag.style.cssText = 'background:#fff;border:2px solid #FFD4B8;border-radius:50px;padding:8px 16px;font-size:0.85rem;cursor:pointer;display:flex;align-items:center;gap:6px;';
+    tag.innerHTML = FAKE_USERS[i % FAKE_USERS.length] + ' \u03b2\u03c1\u03ae\u03ba\u03b5: "' + d.name + '" <span style="background:#FFD700;color:#333;border-radius:50px;padding:2px 8px;font-size:0.7rem;font-weight:700;">\u2b50' + d.rarity + '</span>';
     tag.onclick = function() {
       document.getElementById('searchInput').value = d.name;
       doSearch();
@@ -233,14 +257,14 @@ async function callDeepSeek(systemPrompt, userMessage, apiKey) {
 
 async function doSearch() {
   const query = document.getElementById('searchInput').value.trim();
-  if (!query) return showToast('⚠️ Γράψε κάτι για αναζήτηση!', 'error');
+  if (!query) return showToast('\u26a0\ufe0f \u0393\u03c1\u03ac\u03c8\u03b5 \u03ba\u03ac\u03c4\u03b9 \u03b3\u03b9\u03b1 \u03b1\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7!', 'error');
 
   // Check cache
   const cache = getCache();
   const cacheKey = query.toLowerCase().trim();
   if (cache[cacheKey]) {
     displayResults(cache[cacheKey], query);
-    showToast('📦 Από την κρυφή μνήμη! (cache)', 'success');
+    showToast('\U0001f4e6 \u0391\u03c0\u03cc \u03c4\u03b7\u03bd \u03ba\u03c1\u03c5\u03c6\u03ae \u03bc\u03bd\u03ae\u03bc\u03b7! (cache)', 'success');
     return;
   }
 
@@ -251,9 +275,9 @@ async function doSearch() {
   try {
     const systemPrompt = 'You are an absurd product generator for a parody e-commerce site. Given a search query, create 2-5 fake products. Respond ONLY with a valid JSON object (no markdown, no extra text) in this exact structure: \n' +
       '{"products":[\n' +
-      '  {"name":"Πετούμενο ψυγείο με φωνητική υποστήριξη","description":"Διατηρεί τα τρόφιμα δροσερά και σου λέει αν ξέχασες το γάλα.","price":3.42,"rarity":87,"ratingBreakdown":{"1":2,"2":3,"3":10,"4":25,"5":60},"totalPurchases":1324,"reviews":[{"username":"Γιάννης","rating":5,"text":"Μιλάει πιο καθαρά από το αφεντικό μου!","date":"2025-08-12"}]}\n' +
+      '  {"name":"\u03a0\u03b5\u03c4\u03bf\u03cd\u03bc\u03b5\u03bd\u03bf \u03c8\u03c5\u03b3\u03b5\u03af\u03bf \u03bc\u03b5 \u03c6\u03c9\u03bd\u03b7\u03c4\u03b9\u03ba\u03ae \u03c5\u03c0\u03bf\u03c3\u03c4\u03ae\u03c1\u03b9\u03be\u03b7","description":"\u0394\u03b9\u03b1\u03c4\u03b7\u03c1\u03b5\u03af \u03c4\u03b1 \u03c4\u03c1\u03cc\u03c6\u03b9\u03bc\u03b1 \u03b4\u03c1\u03bf\u03c3\u03b5\u03c1\u03ac \u03ba\u03b1\u03b9 \u03c3\u03bf\u03c5 \u03bb\u03ad\u03b5\u03b9 \u03b1\u03bd \u03be\u03ad\u03c7\u03b1\u03c3\u03b5\u03c2 \u03c4\u03bf \u03b3\u03ac\u03bb\u03b1.","price":3.42,"rarity":87,"ratingBreakdown":{"1":2,"2":3,"3":10,"4":25,"5":60},"totalPurchases":1324,"reviews":[{"username":"\u0393\u03b9\u03ac\u03bd\u03bd\u03b7\u03c2","rating":5,"text":"\u039c\u03b9\u03bb\u03ac\u03b5\u03b9 \u03c0\u03b9\u03bf \u03ba\u03b1\u03b8\u03b1\u03c1\u03ac \u03b1\u03c0\u03cc \u03c4\u03bf \u03b1\u03c6\u03b5\u03bd\u03c4\u03b9\u03ba\u03cc \u03bc\u03bf\u03c5!","date":"2025-08-12"}]}\n' +
       ']}\n' +
-      'Rarity must be 1-100. Number of reviews inversely proportional to rarity: 90-100→1-2 reviews, 70-89→2-3, 40-69→3-4, <40→4-5. ratingBreakdown must sum to 100%. totalPurchases 200-5000. All text in Greek. Usernames common Greek first names.';
+      'Rarity must be 1-100. Number of reviews inversely proportional to rarity: 90-100\u21921-2 reviews, 70-89\u21922-3, 40-69\u21923-4, <40\u21924-5. ratingBreakdown must sum to 100%. totalPurchases 200-5000. All text in Greek. Usernames common Greek first names.';
 
     const raw = await callDeepSeek(systemPrompt, 'Search query: ' + query, apiKey);
     const cleaned = raw.replace(/```json?/gi, '').replace(/```/g, '').trim();
@@ -270,20 +294,20 @@ async function doSearch() {
     displayResults(result.products, query);
   } catch (e) {
     console.error(e);
-    showToast('😅 Ο αλγόριθμος πήγε για καφέ. Δοκίμασε ξανά!', 'error');
+    showToast('\U0001f605 \u039f \u03b1\u03bb\u03b3\u03cc\u03c1\u03b9\u03b8\u03bc\u03bf\u03c2 \u03c0\u03ae\u03b3\u03b5 \u03b3\u03b9\u03b1 \u03ba\u03b1\u03c6\u03ad. \u0394\u03bf\u03ba\u03af\u03bc\u03b1\u03c3\u03b5 \u03be\u03b1\u03bd\u03ac!', 'error');
   } finally {
     showLoading(false);
   }
 }
 
 function displayResults(products, query) {
-  document.getElementById('resultsTitle').textContent = 'Αποτελέσματα για: "' + query + '"';
+  document.getElementById('resultsTitle').textContent = '\u0391\u03c0\u03bf\u03c4\u03b5\u03bb\u03ad\u03c3\u03bc\u03b1\u03c4\u03b1 \u03b3\u03b9\u03b1: "' + query + '"';
 
   // Calculate points
   const totalRarity = products.reduce(function(sum, p) {
     return sum + (p.rarity || 0);
   }, 0);
-  document.getElementById('pointsEarned').textContent = '+' + totalRarity + ' πόντοι';
+  document.getElementById('pointsEarned').textContent = '+' + totalRarity + ' \u03c0\u03cc\u03bd\u03c4\u03bf\u03b9';
 
   // Add points to user
   let d = getData();
@@ -327,31 +351,31 @@ function displayResults(products, query) {
 
     card.innerHTML =
       '<div class="product-image">' +
-        '<span class="missing-icon">🖼️</span>' +
-        (p.rarity === 100 ? '<span class="crown">👑</span>' : '') +
+        '<span style="font-size:4rem;opacity:0.5;">\U0001f5bc\ufe0f</span>' +
+        (p.rarity === 100 ? '<span style="position:absolute;top:8px;right:8px;font-size:2rem;animation:crownBounce 1.5s infinite;">\U0001f451</span>' : '') +
       '</div>' +
       '<div class="product-body">' +
         '<div class="product-name">' + escapeHtml(p.name) + '</div>' +
         '<div class="product-desc">' + escapeHtml(p.description) + '</div>' +
-        '<div class="product-price">€' + formatPrice(p.price) + '</div>' +
-        '<div class="product-rarity">⭐ Σπανιότητα: ' + p.rarity + '/100</div>' +
+        '<div class="product-price">\u20ac' + formatPrice(p.price) + '</div>' +
+        '<div class="product-rarity">\u2b50 \u03a3\u03c0\u03b1\u03bd\u03b9\u03cc\u03c4\u03b7\u03c4\u03b1: ' + p.rarity + '/100</div>' +
         '<div class="product-stars">' +
-          '★'.repeat(fullStars) + '☆'.repeat(5 - fullStars) +
-          '<span style="font-size:0.8rem;color:var(--text-light);margin-left:4px;">(' + totalReviews + ' κριτικές)</span>' +
+          '<span class="stars-filled">' + '\u2605'.repeat(fullStars) + '</span><span class="stars-empty">' + '\u2606'.repeat(5 - fullStars) + '</span>' +
+          '<span style="font-size:0.8rem;color:#6B5B7B;margin-left:4px;">(' + totalReviews + ' \u03ba\u03c1\u03b9\u03c4\u03b9\u03ba\u03ad\u03c2)</span>' +
         '</div>' +
-        '<div class="product-meta">🛒 ' + (p.totalPurchases || 0) + ' αγορές</div>' +
+        '<div class="product-meta">\U0001f6d2 ' + (p.totalPurchases || 0) + ' \u03b1\u03b3\u03bf\u03c1\u03ad\u03c2</div>' +
         '<div class="product-actions">' +
-          '<button class="btn ' + (isFav ? 'btn-fav active' : 'btn-secondary') + '" onclick="toggleFav(' + i + ')">' + (isFav ? '❤️' : '🤍') + ' Αγαπημένα</button>' +
-          '<button class="btn ' + (inCart ? 'btn-secondary' : 'btn-cart') + '" onclick="toggleCart(' + i + ')">' + (inCart ? '✅' : '🛒') + ' ' + (inCart ? 'Στο καλάθι' : 'Καλάθι') + '</button>' +
-          '<button class="btn btn-buy" onclick="buyNow(' + i + ')">Αγορά τώρα</button>' +
+          '<button class="' + (isFav ? 'btn-fav active' : 'btn-fav') + '" onclick="toggleFav(' + i + ')">' + (isFav ? '\u2764\ufe0f' : '\U0001f90d') + ' \u0391\u03b3\u03b1\u03c0\u03b7\u03bc\u03ad\u03bd\u03b1</button>' +
+          '<button class="' + (inCart ? 'btn-fav' : 'btn-cart') + '" onclick="toggleCart(' + i + ')">' + (inCart ? '\u2705' : '\U0001f6d2') + ' ' + (inCart ? '\u03a3\u03c4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9' : '\u039a\u03b1\u03bb\u03ac\u03b8\u03b9') + '</button>' +
+          '<button class="btn-buy" onclick="buyNow(' + i + ')">\u0391\u03b3\u03bf\u03c1\u03ac \u03c4\u03ce\u03c1\u03b1</button>' +
         '</div>' +
         '<div class="reviews-section">' +
-          '<h4>💬 Κριτικές (' + totalReviews + ')</h4>' +
+          '<h4>\U0001f4ac \u039a\u03c1\u03b9\u03c4\u03b9\u03ba\u03ad\u03c2 (' + totalReviews + ')</h4>' +
           allReviews.map(function(r) {
             return '<div class="review-item">' +
               '<div class="review-header">' +
                 '<span class="review-user">' + escapeHtml(r.username) + '</span>' +
-                '<span>' + '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating) + '</span>' +
+                '<span>' + '\u2605'.repeat(r.rating) + '\u2606'.repeat(5 - r.rating) + '</span>' +
               '</div>' +
               '<div class="review-text">' + escapeHtml(r.text) + '</div>' +
               '<div class="review-date">' + (r.date || '') + '</div>' +
@@ -368,7 +392,7 @@ function displayResults(products, query) {
     // Rare find notification
     if (p.rarity > 90) {
       setTimeout(function() {
-        showToast('🔥 Σπάνιο εύρημα! "' + p.name + '" (⭐' + p.rarity + ') θα μπεις στο Hall of Fame;', 'warning');
+        showToast('\U0001f525 \u03a3\u03c0\u03ac\u03bd\u03b9\u03bf \u03b5\u03cd\u03c1\u03b7\u03bc\u03b1! "' + p.name + '" (\u2b50' + p.rarity + ') \u03b8\u03b1 \u03bc\u03c0\u03b5\u03b9\u03c2 \u03c3\u03c4\u03bf Hall of Fame;', 'warning');
         addRareFind(p);
       }, 1000);
     }
@@ -399,7 +423,7 @@ function toggleFav(idx) {
 
   const name = card.querySelector('.product-name')?.textContent;
   const desc = card.querySelector('.product-desc')?.textContent;
-  const price = parseFloat(card.querySelector('.product-price')?.textContent?.replace('€', '').replace(',', '.'));
+  const price = parseFloat(card.querySelector('.product-price')?.textContent?.replace('\u20ac', '').replace(',', '.'));
   const rarity = parseInt(card.querySelector('.product-rarity')?.textContent?.match(/\d+/)?.[0]);
   const product = { name: name, description: desc, price: price, rarity: rarity };
 
@@ -411,10 +435,10 @@ function toggleFav(idx) {
 
   if (existing >= 0) {
     d.favorites.splice(existing, 1);
-    showToast('💔 Αφαιρέθηκε από αγαπημένα', 'error');
+    showToast('\U0001f494 \u0391\u03c6\u03b1\u03b9\u03c1\u03ad\u03b8\u03b7\u03ba\u03b5 \u03b1\u03c0\u03cc \u03b1\u03b3\u03b1\u03c0\u03b7\u03bc\u03ad\u03bd\u03b1', 'error');
   } else {
     d.favorites.push(product);
-    showToast('❤️ Προστέθηκε στα αγαπημένα!', 'success');
+    showToast('\u2764\ufe0f \u03a0\u03c1\u03bf\u03c3\u03c4\u03ad\u03b8\u03b7\u03ba\u03b5 \u03c3\u03c4\u03b1 \u03b1\u03b3\u03b1\u03c0\u03b7\u03bc\u03ad\u03bd\u03b1!', 'success');
   }
 
   saveData(d);
@@ -424,7 +448,7 @@ function toggleFav(idx) {
   const products = getCurrentProducts();
   if (products) {
     const title = document.getElementById('resultsTitle').textContent;
-    const q = title.replace('Αποτελέσματα για: "', '').replace('"', '');
+    const q = title.replace('\u0391\u03c0\u03bf\u03c4\u03b5\u03bb\u03ad\u03c3\u03bc\u03b1\u03c4\u03b1 \u03b3\u03b9\u03b1: "', '').replace('"', '');
     displayResults(products, q);
   }
 }
@@ -437,7 +461,7 @@ function toggleCart(idx) {
 
   const name = card.querySelector('.product-name')?.textContent;
   const desc = card.querySelector('.product-desc')?.textContent;
-  const price = parseFloat(card.querySelector('.product-price')?.textContent?.replace('€', '').replace(',', '.'));
+  const price = parseFloat(card.querySelector('.product-price')?.textContent?.replace('\u20ac', '').replace(',', '.'));
   const rarity = parseInt(card.querySelector('.product-rarity')?.textContent?.match(/\d+/)?.[0]);
   const product = { name: name, description: desc, price: price, rarity: rarity };
 
@@ -449,10 +473,10 @@ function toggleCart(idx) {
 
   if (existing >= 0) {
     d.cart.splice(existing, 1);
-    showToast('🗑️ Αφαιρέθηκε από το καλάθι', 'error');
+    showToast('\U0001f5d1\ufe0f \u0391\u03c6\u03b1\u03b9\u03c1\u03ad\u03b8\u03b7\u03ba\u03b5 \u03b1\u03c0\u03cc \u03c4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9', 'error');
   } else {
     d.cart.push(product);
-    showToast('🛒 Προστέθηκε στο καλάθι!', 'success');
+    showToast('\U0001f6d2 \u03a0\u03c1\u03bf\u03c3\u03c4\u03ad\u03b8\u03b7\u03ba\u03b5 \u03c3\u03c4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9!', 'success');
   }
 
   saveData(d);
@@ -461,7 +485,7 @@ function toggleCart(idx) {
   const products = getCurrentProducts();
   if (products) {
     const title = document.getElementById('resultsTitle').textContent;
-    const q = title.replace('Αποτελέσματα για: "', '').replace('"', '');
+    const q = title.replace('\u0391\u03c0\u03bf\u03c4\u03b5\u03bb\u03ad\u03c3\u03bc\u03b1\u03c4\u03b1 \u03b3\u03b9\u03b1: "', '').replace('"', '');
     displayResults(products, q);
   }
 }
@@ -486,7 +510,7 @@ function getCurrentProducts() {
   grid.querySelectorAll('.product-card').forEach(function(card) {
     const name = card.querySelector('.product-name')?.textContent;
     const desc = card.querySelector('.product-desc')?.textContent;
-    const price = parseFloat(card.querySelector('.product-price')?.textContent?.replace('€', '').replace(',', '.'));
+    const price = parseFloat(card.querySelector('.product-price')?.textContent?.replace('\u20ac', '').replace(',', '.'));
     const rarity = parseInt(card.querySelector('.product-rarity')?.textContent?.match(/\d+/)?.[0]);
     if (name) products.push({ name: name, description: desc, price: price, rarity: rarity });
   });
@@ -504,13 +528,13 @@ function buyNow(idx) {
 
   const name = card.querySelector('.product-name')?.textContent;
   const desc = card.querySelector('.product-desc')?.textContent;
-  const price = parseFloat(card.querySelector('.product-price')?.textContent?.replace('€', '').replace(',', '.'));
+  const price = parseFloat(card.querySelector('.product-price')?.textContent?.replace('\u20ac', '').replace(',', '.'));
   const rarity = parseInt(card.querySelector('.product-rarity')?.textContent?.match(/\d+/)?.[0]);
   const product = { name: name, description: desc, price: price, rarity: rarity };
 
   lastPurchasedProduct = product;
-  document.getElementById('purchaseProductName').textContent = '"' + name + '" έρχεται... από άλλη διάσταση! 🚀';
-  document.getElementById('purchaseOverlay').classList.add('active');
+  document.getElementById('purchaseProductName').textContent = '"' + name + '" \u03ad\u03c1\u03c7\u03b5\u03c4\u03b1\u03b9... \u03b1\u03c0\u03cc \u03ac\u03bb\u03bb\u03b7 \u03b4\u03b9\u03ac\u03c3\u03c4\u03b1\u03c3\u03b7! \U0001f680';
+  document.getElementById('purchaseOverlay').style.display = 'flex';
 
   // Add to purchase history
   let d = getData();
@@ -525,12 +549,12 @@ function buyNow(idx) {
 }
 
 function closePurchase() {
-  document.getElementById('purchaseOverlay').classList.remove('active');
+  document.getElementById('purchaseOverlay').style.display = 'none';
   lastPurchasedProduct = null;
 }
 
 function closePurchaseAndReview() {
-  document.getElementById('purchaseOverlay').classList.remove('active');
+  document.getElementById('purchaseOverlay').style.display = 'none';
   if (lastPurchasedProduct) showReviewForm(lastPurchasedProduct);
   lastPurchasedProduct = null;
 }
@@ -539,22 +563,19 @@ function closePurchaseAndReview() {
 
 function showReviewForm(product) {
   const pid = getProductId(product);
-  const modalTitle = document.getElementById('modalTitle');
-  const modalBody = document.getElementById('modalBody');
-
-  modalTitle.textContent = '✍️ Κριτική για: ' + product.name;
-  modalBody.innerHTML =
+  document.getElementById('modalTitle').textContent = '\u270d\ufe0f \u039a\u03c1\u03b9\u03c4\u03b9\u03ba\u03ae \u03b3\u03b9\u03b1: ' + product.name;
+  document.getElementById('modalBody').innerHTML =
     '<div class="review-form">' +
       '<div class="star-selector" id="starSelector">' +
         [1, 2, 3, 4, 5].map(function(s) {
-          return '<span data-star="' + s + '" onclick="setReviewStar(' + s + ')">☆</span>';
+          return '<span data-star="' + s + '" onclick="setReviewStar(' + s + ')">\u2606</span>';
         }).join('') +
       '</div>' +
-      '<textarea id="reviewText" placeholder="Γράψε την κριτική σου..." rows="3"></textarea>' +
-      '<button class="btn btn-primary" onclick="submitReview(\'' + pid + '\')">Υποβολή ✅</button>' +
+      '<textarea id="reviewText" placeholder="\u0393\u03c1\u03ac\u03c8\u03b5 \u03c4\u03b7\u03bd \u03ba\u03c1\u03b9\u03c4\u03b9\u03ba\u03ae \u03c3\u03bf\u03c5..." rows="3"></textarea>' +
+      '<button onclick="submitReview(\'' + pid + '\')" style="width:100%;padding:12px 28px;border:none;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;background:linear-gradient(135deg,#FF6B35,#7B2D8E);color:#fff;">\u03a5\u03c0\u03bf\u03b2\u03bf\u03bb\u03ae \u2705</button>' +
     '</div>';
 
-  document.getElementById('modalOverlay').classList.add('active');
+  document.getElementById('modalOverlay').style.display = 'flex';
   window._reviewStar = 5;
   setReviewStar(5);
 }
@@ -562,13 +583,13 @@ function showReviewForm(product) {
 function setReviewStar(star) {
   window._reviewStar = star;
   document.querySelectorAll('#starSelector span').forEach(function(el) {
-    el.textContent = parseInt(el.dataset.star) <= star ? '★' : '☆';
+    el.textContent = parseInt(el.dataset.star) <= star ? '\u2605' : '\u2606';
   });
 }
 
 function submitReview(pid) {
   const text = document.getElementById('reviewText').value.trim();
-  if (!text) return showToast('⚠️ Γράψε κάτι!', 'error');
+  if (!text) return showToast('\u26a0\ufe0f \u0393\u03c1\u03ac\u03c8\u03b5 \u03ba\u03ac\u03c4\u03b9!', 'error');
 
   const d = getData();
   if (!d) return;
@@ -584,7 +605,7 @@ function submitReview(pid) {
 
   saveData(d);
   closeModal();
-  showToast('✅ Κριτική προστέθηκε!', 'success');
+  showToast('\u2705 \u039a\u03c1\u03b9\u03c4\u03b9\u03ba\u03ae \u03c0\u03c1\u03bf\u03c3\u03c4\u03ad\u03b8\u03b7\u03ba\u03b5!', 'success');
 }
 
 // ===== RARE FINDS =====
@@ -607,14 +628,14 @@ function addRareFind(product) {
 // ===== BADGES =====
 
 const BADGE_DEFS = [
-  { id: 'explorer', name: 'Εξερευνητής', icon: '🔍', desc: 'Πρώτη αναζήτηση', check: function(d) { return (d.points || 0) >= 10; } },
-  { id: 'collector', name: 'Συλλέκτης', icon: '📦', desc: '500+ πόντοι', check: function(d) { return (d.points || 0) >= 500; } },
-  { id: 'legend', name: 'Θρύλος του O tee mou', icon: '👑', desc: 'Βρες rarity 100', check: function(d) { return d.rareFinds && d.rareFinds.some(function(r) { return r.rarity === 100; }); } },
-  { id: 'hearts', name: 'Καρδούλες', icon: '💖', desc: '5 αγαπημένα', check: function(d) { return d.favorites && d.favorites.length >= 5; } },
-  { id: 'shopaholic', name: 'Shopaholic', icon: '🛍️', desc: '3 αγορές', check: function(d) { return d.purchaseHistory && d.purchaseHistory.length >= 3; } },
-  { id: 'hunter', name: 'Κυνηγός Σπανίων', icon: '🏆', desc: '3 σπάνια ευρήματα', check: function(d) { return d.rareFinds && d.rareFinds.length >= 3; } },
-  { id: 'hoarder', name: 'Μαζεύτρια', icon: '🗄️', desc: '10 στο καλάθι', check: function(d) { return d.cart && d.cart.length >= 10; } },
-  { id: 'reviewer', name: 'Κριτικός', icon: '📝', desc: 'Γράψε 3 κριτικές', check: function(d) {
+  { id: 'explorer', name: '\u0395\u03be\u03b5\u03c1\u03b5\u03c5\u03bd\u03b7\u03c4\u03ae\u03c2', icon: '\U0001f50d', desc: '\u03a0\u03c1\u03ce\u03c4\u03b7 \u03b1\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7', check: function(d) { return (d.points || 0) >= 10; } },
+  { id: 'collector', name: '\u03a3\u03c5\u03bb\u03bb\u03ad\u03ba\u03c4\u03b7\u03c2', icon: '\U0001f4e6', desc: '500+ \u03c0\u03cc\u03bd\u03c4\u03bf\u03b9', check: function(d) { return (d.points || 0) >= 500; } },
+  { id: 'legend', name: '\u0398\u03c1\u03cd\u03bb\u03bf\u03c2 \u03c4\u03bf\u03c5 O tee mou', icon: '\U0001f451', desc: '\u0392\u03c1\u03b5\u03c2 rarity 100', check: function(d) { return d.rareFinds && d.rareFinds.some(function(r) { return r.rarity === 100; }); } },
+  { id: 'hearts', name: '\u039a\u03b1\u03c1\u03b4\u03bf\u03cd\u03bb\u03b5\u03c2', icon: '\U0001f496', desc: '5 \u03b1\u03b3\u03b1\u03c0\u03b7\u03bc\u03ad\u03bd\u03b1', check: function(d) { return d.favorites && d.favorites.length >= 5; } },
+  { id: 'shopaholic', name: 'Shopaholic', icon: '\U0001f6cd\ufe0f', desc: '3 \u03b1\u03b3\u03bf\u03c1\u03ad\u03c2', check: function(d) { return d.purchaseHistory && d.purchaseHistory.length >= 3; } },
+  { id: 'hunter', name: '\u039a\u03c5\u03bd\u03b7\u03b3\u03cc\u03c2 \u03a3\u03c0\u03b1\u03bd\u03af\u03c9\u03bd', icon: '\U0001f3c6', desc: '3 \u03c3\u03c0\u03ac\u03bd\u03b9\u03b1 \u03b5\u03c5\u03c1\u03ae\u03bc\u03b1\u03c4\u03b1', check: function(d) { return d.rareFinds && d.rareFinds.length >= 3; } },
+  { id: 'hoarder', name: '\u039c\u03b1\u03b6\u03b5\u03cd\u03c4\u03c1\u03b9\u03b1', icon: '\U0001f5c4\ufe0f', desc: '10 \u03c3\u03c4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9', check: function(d) { return d.cart && d.cart.length >= 10; } },
+  { id: 'reviewer', name: '\u039a\u03c1\u03b9\u03c4\u03b9\u03ba\u03cc\u03c2', icon: '\U0001f4dd', desc: '\u0393\u03c1\u03ac\u03c8\u03b5 3 \u03ba\u03c1\u03b9\u03c4\u03b9\u03ba\u03ad\u03c2', check: function(d) {
     const r = d.userReviews || {};
     return Object.values(r).reduce(function(a, b) { return a + b.length; }, 0) >= 3;
   }}
@@ -629,7 +650,7 @@ function checkBadges(d) {
     if (!d.badges.includes(b.id) && b.check(d)) {
       d.badges.push(b.id);
       changed = true;
-      showToast('🏅 Νέο badge: ' + b.name + '!', 'success');
+      showToast('\U0001f3c5 \u039d\u03ad\u03bf badge: ' + b.name + '!', 'success');
     }
   });
 
@@ -644,7 +665,7 @@ async function generateLeaderboard(d) {
   const apiKey = d.apiKey || DEFAULT_API_KEY;
 
   try {
-    const systemPrompt = 'Generate a JSON array of 10 fake Greek users with scores for a leaderboard. Respond ONLY with valid JSON array: [{"name":"Μαρία","score":987},...]. Scores 100-1000. Names common Greek first names.';
+    const systemPrompt = 'Generate a JSON array of 10 fake Greek users with scores for a leaderboard. Respond ONLY with valid JSON array: [{"name":"\u039c\u03b1\u03c1\u03af\u03b1","score":987},...]. Scores 100-1000. Names common Greek first names.';
     const raw = await callDeepSeek(systemPrompt, 'Generate leaderboard', apiKey);
     const cleaned = raw.replace(/```json?/gi, '').replace(/```/g, '').trim();
     const lb = JSON.parse(cleaned);
@@ -655,7 +676,7 @@ async function generateLeaderboard(d) {
     }
   } catch (e) {
     // Fallback: generate fake leaderboard locally
-    const fallback = ['Μαρία', 'Δημήτρης', 'Κατερίνα', 'Γιώργος', 'Ελένη', 'Νίκος', 'Σοφία', 'Αλέξης', 'Άννα', 'Πέτρος'];
+    const fallback = ['\u039c\u03b1\u03c1\u03af\u03b1', '\u0394\u03b7\u03bc\u03ae\u03c4\u03c1\u03b7\u03c2', '\u039a\u03b1\u03c4\u03b5\u03c1\u03af\u03bd\u03b1', '\u0393\u03b9\u03ce\u03c1\u03b3\u03bf\u03c2', '\u0395\u03bb\u03ad\u03bd\u03b7', '\u039d\u03af\u03ba\u03bf\u03c2', '\u03a3\u03bf\u03c6\u03af\u03b1', '\u0391\u03bb\u03ad\u03be\u03b7\u03c2', '\u0386\u03bd\u03bd\u03b1', '\u03a0\u03ad\u03c4\u03c1\u03bf\u03c2'];
     d.leaderboard = fallback.map(function(n, i) {
       return { name: n, score: 1000 - i * 87 + Math.floor(Math.random() * 50) };
     });
@@ -668,11 +689,11 @@ async function generateLeaderboard(d) {
 function showModal(title, content) {
   document.getElementById('modalTitle').textContent = title;
   document.getElementById('modalBody').innerHTML = content;
-  document.getElementById('modalOverlay').classList.add('active');
+  document.getElementById('modalOverlay').style.display = 'flex';
 }
 
 function closeModal() {
-  document.getElementById('modalOverlay').classList.remove('active');
+  document.getElementById('modalOverlay').style.display = 'none';
 }
 
 // ===== PROFILE =====
@@ -690,19 +711,19 @@ function showProfile() {
     '</div>';
   }).join('');
 
-  showModal('👤 ' + d.user.name,
-    '<div class="text-center mb-16">' +
-      '<div style="font-size:3rem;">⭐</div>' +
-      '<h3>' + (d.points || 0) + ' πόντοι</h3>' +
-      '<p style="color:var(--text-light);font-size:0.85rem;">Εξερεύνησε για να κερδίσεις περισσότερους!</p>' +
+  showModal('\U0001f464 ' + d.user.name,
+    '<div style="text-align:center;margin-bottom:16px;">' +
+      '<div style="font-size:3rem;">\u2b50</div>' +
+      '<h3>' + (d.points || 0) + ' \u03c0\u03cc\u03bd\u03c4\u03bf\u03b9</h3>' +
+      '<p style="color:#6B5B7B;font-size:0.85rem;">\u0395\u03be\u03b5\u03c1\u03b5\u03cd\u03bd\u03b7\u03c3\u03b5 \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03ba\u03b5\u03c1\u03b4\u03af\u03c3\u03b5\u03b9\u03c2 \u03c0\u03b5\u03c1\u03b9\u03c3\u03c3\u03cc\u03c4\u03b5\u03c1\u03bf\u03c5\u03c2!</p>' +
     '</div>' +
-    '<h3 style="margin-bottom:10px;">🏅 Badges (' + badges.length + '/' + BADGE_DEFS.length + ')</h3>' +
+    '<h3 style="margin-bottom:10px;">\U0001f3c5 Badges (' + badges.length + '/' + BADGE_DEFS.length + ')</h3>' +
     '<div class="badge-grid">' + allBadges + '</div>' +
-    '<div class="mt-16 flex gap-8" style="flex-wrap:wrap;">' +
-      '<button class="btn btn-secondary btn-small" onclick="showLeaderboard()">🏆 Leaderboard</button>' +
-      '<button class="btn btn-secondary btn-small" onclick="showHallOfFame()">🎖️ Hall of Fame</button>' +
-      '<button class="btn btn-secondary btn-small" onclick="exportData()">📤 Εξαγωγή</button>' +
-      '<button class="btn btn-secondary btn-small" onclick="document.getElementById(\'importFile\').click()">📥 Εισαγωγή</button>' +
+    '<div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">' +
+      '<button onclick="showLeaderboard()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">\U0001f3c6 Leaderboard</button>' +
+      '<button onclick="showHallOfFame()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">\U0001f396\ufe0f Hall of Fame</button>' +
+      '<button onclick="exportData()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">\U0001f4e4 \u0395\u03be\u03b1\u03b3\u03c9\u03b3\u03ae</button>' +
+      '<button onclick="document.getElementById(\'importFile\').click()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">\U0001f4e5 \u0395\u03b9\u03c3\u03b1\u03b3\u03c9\u03b3\u03ae</button>' +
       '<input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">' +
     '</div>'
   );
@@ -718,7 +739,7 @@ function showLeaderboard() {
   const userPoints = d.points || 0;
 
   // Add user to leaderboard
-  const allEntries = lb.concat([{ name: d.user.name + ' (εσύ)', score: userPoints, isUser: true }]);
+  const allEntries = lb.concat([{ name: d.user.name + ' (\u03b5\u03c3\u03cd)', score: userPoints, isUser: true }]);
   allEntries.sort(function(a, b) { return b.score - a.score; });
 
   const items = allEntries.slice(0, 15).map(function(e, i) {
@@ -727,12 +748,12 @@ function showLeaderboard() {
     return '<div class="leaderboard-item ' + (isUser ? 'current-user' : '') + '">' +
       '<span class="rank ' + rankClass + '">' + (i + 1) + '</span>' +
       '<span class="lb-name">' + e.name + '</span>' +
-      '<span class="lb-points">' + e.score + ' πόντοι</span>' +
+      '<span class="lb-points">' + e.score + ' \u03c0\u03cc\u03bd\u03c4\u03bf\u03b9</span>' +
     '</div>';
   }).join('');
 
-  showModal('🏆 Top Ευρήματα (Leaderboard)',
-    '<p style="color:var(--text-light);margin-bottom:16px;">Οι κορυφαίοι εξερευνητές του O tee mou!</p>' +
+  showModal('\U0001f3c6 Top \u0395\u03c5\u03c1\u03ae\u03bc\u03b1\u03c4\u03b1 (Leaderboard)',
+    '<p style="color:#6B5B7B;margin-bottom:16px;">\u039f\u03b9 \u03ba\u03bf\u03c1\u03c5\u03c6\u03b1\u03af\u03bf\u03b9 \u03b5\u03be\u03b5\u03c1\u03b5\u03c5\u03bd\u03b7\u03c4\u03ad\u03c2 \u03c4\u03bf\u03c5 O tee mou!</p>' +
     items
   );
 }
@@ -745,87 +766,117 @@ function showHallOfFame() {
 
   const rare = d.rareFinds || [];
   if (!rare.length) {
-    showModal('🎖️ Hall of Fame', '<p style="color:var(--text-light);">Δεν έχεις βρει ακόμα σπάνια ευρήματα! Συνέχισε να ψάχνεις! 🔍</p>');
+    showModal('\U0001f396\ufe0f Hall of Fame',
+      '<p style="color:#6B5B7B;text-align:center;">\u0394\u03b5\u03bd \u03ad\u03c7\u03b5\u03b9\u03c2 \u03b2\u03c1\u03b5\u03b9 \u03b1\u03ba\u03cc\u03bc\u03b1 \u03c3\u03c0\u03ac\u03bd\u03b9\u03b1 \u03b5\u03c5\u03c1\u03ae\u03bc\u03b1\u03c4\u03b1! \U0001f50d \u03a3\u03c5\u03bd\u03ad\u03c7\u03b9\u03c3\u03b5 \u03bd\u03b1 \u03c8\u03ac\u03c7\u03bd\u03b5\u03b9\u03c2!</p>'
+    );
     return;
   }
 
   const items = rare.map(function(r) {
     return '<div class="hall-item">' +
-      '<div class="trophy">🏆</div>' +
+      '<div class="trophy">' + (r.rarity === 100 ? '\U0001f451' : '\U0001f3c6') + '</div>' +
       '<div class="hall-name">' + escapeHtml(r.name) + '</div>' +
-      '<div class="hall-rarity">⭐ Σπανιότητα: ' + r.rarity + '/100</div>' +
+      '<div class="hall-rarity">\u2b50 \u03a3\u03c0\u03b1\u03bd\u03b9\u03cc\u03c4\u03b7\u03c4\u03b1: ' + r.rarity + '/100</div>' +
     '</div>';
   }).join('');
 
-  showModal('🎖️ Hall of Fame', '<div class="hall-grid">' + items + '</div>');
+  showModal('\U0001f396\ufe0f Hall of Fame',
+    '<p style="color:#6B5B7B;margin-bottom:16px;">\u03a4\u03b1 \u03c3\u03c0\u03b1\u03bd\u03b9\u03cc\u03c4\u03b5\u03c1\u03b1 \u03b5\u03c5\u03c1\u03ae\u03bc\u03b1\u03c4\u03ac \u03c3\u03bf\u03c5!</p>' +
+    '<div class="hall-grid">' + items + '</div>'
+  );
 }
 
 // ===== FAVORITES VIEW =====
 
 function showFavorites() {
   const d = getData();
-  if (!d || !d.favorites || !d.favorites.length) {
-    showModal('❤️ Αγαπημένα', '<p style="color:var(--text-light);">Δεν έχεις αγαπημένα ακόμα! Πρόσθεσε με το κουμπί 🤍</p>');
+  if (!d) return;
+
+  const favs = d.favorites || [];
+  if (!favs.length) {
+    showModal('\u2764\ufe0f \u0391\u03b3\u03b1\u03c0\u03b7\u03bc\u03ad\u03bd\u03b1',
+      '<p style="color:#6B5B7B;text-align:center;">\u0394\u03b5\u03bd \u03ad\u03c7\u03b5\u03b9\u03c2 \u03b1\u03b3\u03b1\u03c0\u03b7\u03bc\u03ad\u03bd\u03b1 \u03b1\u03ba\u03cc\u03bc\u03b1! \u2764\ufe0f \u03a0\u03c1\u03cc\u03c3\u03b8\u03b5\u03c3\u03b5 \u03c0\u03c1\u03bf\u03ca\u03cc\u03bd\u03c4\u03b1 \u03c0\u03bf\u03c5 \u03c3\u03bf\u03c5 \u03b1\u03c1\u03ad\u03c3\u03bf\u03c5\u03bd!</p>'
+    );
     return;
   }
 
-  const items = d.favorites.map(function(f) {
+  const items = favs.map(function(f, i) {
     return '<div class="cart-item">' +
-      '<div class="cart-img">🖼️</div>' +
+      '<div class="cart-img">\U0001f5bc\ufe0f</div>' +
       '<div class="cart-info">' +
         '<div class="cart-name">' + escapeHtml(f.name) + '</div>' +
-        '<div class="cart-price">€' + formatPrice(f.price || 0) + '</div>' +
+        '<div class="cart-price">\u20ac' + formatPrice(f.price) + ' \u2b50' + (f.rarity || 0) + '</div>' +
       '</div>' +
-      '<button class="cart-remove" onclick="removeFav(\'' + getProductId(f) + '\')">✕</button>' +
+      '<button class="cart-remove" onclick="removeFav(' + i + ')">\U0001f5d1\ufe0f</button>' +
     '</div>';
   }).join('');
 
-  showModal('❤️ Αγαπημένα', items);
+  showModal('\u2764\ufe0f \u0391\u03b3\u03b1\u03c0\u03b7\u03bc\u03ad\u03bd\u03b1 (' + favs.length + ')',
+    '<div style="margin-bottom:16px;">' + items + '</div>' +
+    '<button onclick="closeModal()" style="width:100%;padding:12px 28px;border:none;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;background:linear-gradient(135deg,#FF6B35,#7B2D8E);color:#fff;">\u0395\u03bd\u03c4\u03ac\u03be\u03b5\u03b9 \u2705</button>'
+  );
 }
 
-function removeFav(pid) {
+function removeFav(idx) {
   let d = getData();
   if (!d) return;
-  d.favorites = d.favorites.filter(function(f) { return getProductId(f) !== pid; });
-  saveData(d);
-  showFavorites();
+  d.favorites = d.favorites || [];
+  if (idx >= 0 && idx < d.favorites.length) {
+    d.favorites.splice(idx, 1);
+    saveData(d);
+    showToast('\U0001f494 \u0391\u03c6\u03b1\u03b9\u03c1\u03ad\u03b8\u03b7\u03ba\u03b5 \u03b1\u03c0\u03cc \u03b1\u03b3\u03b1\u03c0\u03b7\u03bc\u03ad\u03bd\u03b1', 'error');
+    showFavorites(); // Re-render
+  }
 }
 
 // ===== CART VIEW =====
 
 function showCart() {
   const d = getData();
-  if (!d || !d.cart || !d.cart.length) {
-    showModal('🛒 Καλάθι', '<p style="color:var(--text-light);">Το καλάθι σου είναι άδειο! Ψάξε για απίθανα προϊόντα! 🔍</p>');
+  if (!d) return;
+
+  const cart = d.cart || [];
+  if (!cart.length) {
+    showModal('\U0001f6d2 \u039a\u03b1\u03bb\u03ac\u03b8\u03b9',
+      '<p style="color:#6B5B7B;text-align:center;">\u03a4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9 \u03c3\u03bf\u03c5 \u03b5\u03af\u03bd\u03b1\u03b9 \u03ac\u03b4\u03b5\u03b9\u03bf! \U0001f6d2 \u03a8\u03ac\u03be\u03b5 \u03b3\u03b9\u03b1 \u03b1\u03c0\u03af\u03b8\u03b1\u03bd\u03b1 \u03c0\u03c1\u03bf\u03ca\u03cc\u03bd\u03c4\u03b1!</p>'
+    );
     return;
   }
 
-  const total = d.cart.reduce(function(s, c) { return s + (c.price || 0); }, 0);
-  const items = d.cart.map(function(c) {
+  const total = cart.reduce(function(sum, c) { return sum + (c.price || 0); }, 0);
+
+  const items = cart.map(function(c, i) {
     return '<div class="cart-item">' +
-      '<div class="cart-img">🖼️</div>' +
+      '<div class="cart-img">\U0001f5bc\ufe0f</div>' +
       '<div class="cart-info">' +
         '<div class="cart-name">' + escapeHtml(c.name) + '</div>' +
-        '<div class="cart-price">€' + formatPrice(c.price || 0) + '</div>' +
+        '<div class="cart-price">\u20ac' + formatPrice(c.price) + '</div>' +
       '</div>' +
-      '<button class="cart-remove" onclick="removeFromCart(\'' + getProductId(c) + '\')">✕</button>' +
+      '<button class="cart-remove" onclick="removeFromCart(' + i + ')">\U0001f5d1\ufe0f</button>' +
     '</div>';
   }).join('');
 
-  showModal('🛒 Καλάθι',
-    items +
-    '<div class="mt-16" style="text-align:right;font-size:1.2rem;font-weight:700;">Σύνολο: €' + formatPrice(total) + '</div>' +
-    '<button class="btn btn-primary mt-16" onclick="checkoutAll()">Αγορά όλων 🎉</button>'
+  showModal('\U0001f6d2 \u039a\u03b1\u03bb\u03ac\u03b8\u03b9 (' + cart.length + ')',
+    '<div style="margin-bottom:16px;">' + items + '</div>' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:2px solid #FFD4B8;margin-bottom:12px;">' +
+      '<span style="font-weight:600;">\u03a3\u03cd\u03bd\u03bf\u03bb\u03bf:</span>' +
+      '<span style="font-size:1.3rem;font-weight:700;color:#FF6B35;">\u20ac' + formatPrice(total) + '</span>' +
+    '</div>' +
+    '<button onclick="checkoutAll()" style="width:100%;padding:12px 28px;border:none;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;background:linear-gradient(135deg,#FF6B35,#7B2D8E);color:#fff;">\u0391\u03b3\u03bf\u03c1\u03ac \u03cc\u03bb\u03c9\u03bd \U0001f680</button>'
   );
 }
 
-function removeFromCart(pid) {
+function removeFromCart(idx) {
   let d = getData();
   if (!d) return;
-  d.cart = d.cart.filter(function(c) { return getProductId(c) !== pid; });
-  saveData(d);
-  updateCartBadge();
-  showCart();
+  d.cart = d.cart || [];
+  if (idx >= 0 && idx < d.cart.length) {
+    d.cart.splice(idx, 1);
+    saveData(d);
+    updateCartBadge();
+    showToast('\U0001f5d1\ufe0f \u0391\u03c6\u03b1\u03b9\u03c1\u03ad\u03b8\u03b7\u03ba\u03b5 \u03b1\u03c0\u03cc \u03c4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9', 'error');
+    showCart(); // Re-render
+  }
 }
 
 function checkoutAll() {
@@ -833,54 +884,62 @@ function checkoutAll() {
   if (!d || !d.cart || !d.cart.length) return;
 
   d.purchaseHistory = d.purchaseHistory || [];
-  d.cart.forEach(function(c) { d.purchaseHistory.push(c); });
-  const total = d.cart.reduce(function(s, c) { return s + (c.price || 0); }, 0);
+  d.cart.forEach(function(c) {
+    d.purchaseHistory.push(c);
+  });
+
+  const total = d.cart.reduce(function(sum, c) { return sum + (c.price || 0); }, 0);
   d.cart = [];
   saveData(d);
   updateCartBadge();
-  closeModal();
-  showConfetti();
-  showToast('🎉 Αγόρασες τα πάντα! Σύνολο: €' + formatPrice(total) + ' (ψεύτικα, φυσικά!)', 'success');
   checkBadges(d);
+
+  closeModal();
+  showToast('\U0001f389 \u0391\u03b3\u03cc\u03c1\u03b1\u03c3\u03b5\u03c2 \u03c4\u03b1 \u03c0\u03ac\u03bd\u03c4\u03b1! (\u20ac' + formatPrice(total) + ')', 'success');
+  showConfetti();
 }
 
 // ===== SETTINGS =====
 
 function showSettings() {
   const d = getData();
-  const isDark = d && d.darkMode;
+  if (!d) return;
 
-  showModal('⚙️ Ρυθμίσεις',
+  showModal('\u2699\ufe0f \u03a1\u03c5\u03b8\u03bc\u03af\u03c3\u03b5\u03b9\u03c2',
     '<div class="settings-group">' +
-      '<h3>🔑 API Key</h3>' +
+      '<h3>\U0001f511 API Key DeepSeek</h3>' +
       '<div class="form-group">' +
-        '<input type="password" id="settingsApiKey" value="' + (d.apiKey || '') + '" placeholder="sk-...">' +
+        '<input type="password" id="settingsApiKey" value="' + (d.apiKey || '') + '" placeholder="sk-..." style="width:100%;padding:12px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.95rem;background:#FFF8F0;color:#2D1B3D;box-sizing:border-box;">' +
       '</div>' +
-      '<button class="btn btn-secondary btn-small" onclick="saveSettingsApiKey()">Αποθήκευση 💾</button>' +
+      '<button onclick="saveSettingsApiKey()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">\u0391\u03c0\u03bf\u03b8\u03ae\u03ba\u03b5\u03c5\u03c3\u03b7 \U0001f4be</button>' +
     '</div>' +
     '<div class="settings-group">' +
-      '<h3>🎨 Θέμα</h3>' +
-      '<button class="btn ' + (isDark ? 'btn-primary' : 'btn-secondary') + '" onclick="toggleDarkMode()" style="width:100%;">' +
-        (isDark ? '☀️ Φωτεινή λειτουργία' : '🌙 Σκοτεινή λειτουργία') +
-      '</button>' +
+      '<h3>\U0001f319 \u0395\u03bc\u03c6\u03ac\u03bd\u03b9\u03c3\u03b7</h3>' +
+      '<button onclick="toggleDarkMode()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">' + (d.darkMode ? '\u2600\ufe0f \u03a6\u03c9\u03c4\u03b5\u03b9\u03bd\u03ae \u03bb\u03b5\u03b9\u03c4\u03bf\u03c5\u03c1\u03b3\u03af\u03b1' : '\U0001f319 \u03a3\u03ba\u03bf\u03c4\u03b5\u03b9\u03bd\u03ae \u03bb\u03b5\u03b9\u03c4\u03bf\u03c5\u03c1\u03b3\u03af\u03b1') + '</button>' +
     '</div>' +
     '<div class="settings-group">' +
-      '<h3>🗑️ Δεδομένα</h3>' +
-      '<button class="btn btn-danger" onclick="clearAllData()" style="width:100%;">Διαγραφή όλων των δεδομένων ⚠️</button>' +
+      '<h3>\U0001f4be \u0394\u03b5\u03b4\u03bf\u03bc\u03ad\u03bd\u03b1</h3>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+        '<button onclick="exportData()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">\U0001f4e4 \u0395\u03be\u03b1\u03b3\u03c9\u03b3\u03ae</button>' +
+        '<button onclick="document.getElementById(\'importFile\').click()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">\U0001f4e5 \u0395\u03b9\u03c3\u03b1\u03b3\u03c9\u03b3\u03ae</button>' +
+        '<input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">' +
+      '</div>' +
+    '</div>' +
+    '<div class="settings-group">' +
+      '<h3>\u26a0\ufe0f \u0395\u03c0\u03b9\u03ba\u03af\u03bd\u03b4\u03c5\u03bd\u03b7 \u03b6\u03ce\u03bd\u03b7</h3>' +
+      '<button onclick="clearAllData()" style="padding:8px 16px;border:2px solid #E74C3C;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF0F0;color:#E74C3C;">\U0001f5d1\ufe0f \u0394\u03b9\u03b1\u03b3\u03c1\u03b1\u03c6\u03ae \u03cc\u03bb\u03c9\u03bd \u03c4\u03c9\u03bd \u03b4\u03b5\u03b4\u03bf\u03bc\u03ad\u03bd\u03c9\u03bd</button>' +
     '</div>'
   );
 }
 
 function saveSettingsApiKey() {
   const key = document.getElementById('settingsApiKey').value.trim();
-  if (!key) return showToast('⚠️ Γράψε API key', 'error');
+  if (!key) return showToast('\u26a0\ufe0f \u0393\u03c1\u03ac\u03c8\u03b5 \u03ad\u03bd\u03b1 API key', 'error');
 
-  let d = getData();
-  if (d) {
-    d.apiKey = key;
-    saveData(d);
-    showToast('✅ Αποθηκεύτηκε!', 'success');
-  }
+  let d = getData() || getDefaultData();
+  d.apiKey = key;
+  saveData(d);
+  showToast('\u2705 API key \u03b1\u03c0\u03bf\u03b8\u03b7\u03ba\u03b5\u03cd\u03c4\u03b7\u03ba\u03b5!', 'success');
 }
 
 function toggleDarkMode() {
@@ -892,15 +951,18 @@ function toggleDarkMode() {
 
   if (d.darkMode) {
     document.documentElement.setAttribute('data-theme', 'dark');
+    showToast('\U0001f319 \u03a3\u03ba\u03bf\u03c4\u03b5\u03b9\u03bd\u03ae \u03bb\u03b5\u03b9\u03c4\u03bf\u03c5\u03c1\u03b3\u03af\u03b1 \u03b5\u03bd\u03b5\u03c1\u03b3\u03bf\u03c0\u03bf\u03b9\u03ae\u03b8\u03b7\u03ba\u03b5!', 'success');
   } else {
     document.documentElement.removeAttribute('data-theme');
+    showToast('\u2600\ufe0f \u03a6\u03c9\u03c4\u03b5\u03b9\u03bd\u03ae \u03bb\u03b5\u03b9\u03c4\u03bf\u03c5\u03c1\u03b3\u03af\u03b1 \u03b5\u03bd\u03b5\u03c1\u03b3\u03bf\u03c0\u03bf\u03b9\u03ae\u03b8\u03b7\u03ba\u03b5!', 'success');
   }
 
-  showSettings();
+  closeModal();
 }
 
 function clearAllData() {
-  if (!confirm('Σίγουρα θέλεις να διαγράψεις όλα τα δεδομένα; Αυτή η ενέργεια είναι μη αναστρέψιμη!')) return;
+  if (!confirm('\u26a0\ufe0f \u03a3\u03af\u03b3\u03bf\u03c5\u03c1\u03b1 \u03b8\u03ad\u03bb\u03b5\u03b9\u03c2 \u03bd\u03b1 \u03b4\u03b9\u03b1\u03b3\u03c1\u03ac\u03c8\u03b5\u03b9\u03c2 \u03cc\u03bb\u03b1 \u03c4\u03b1 \u03b4\u03b5\u03b4\u03bf\u03bc\u03ad\u03bd\u03b1; \u0391\u03c5\u03c4\u03ae \u03b7 \u03b5\u03bd\u03ad\u03c1\u03b3\u03b5\u03b9\u03b1 \u03b5\u03af\u03bd\u03b1\u03b9 \u03bc\u03b7 \u03b1\u03bd\u03b1\u03c3\u03c4\u03c1\u03ad\u03c8\u03b9\u03bc\u03b7!')) return;
+
   localStorage.removeItem(STORAGE_KEY);
   localStorage.removeItem(CACHE_KEY);
   location.reload();
@@ -916,10 +978,10 @@ function exportData() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'oteemou_backup.json';
+  a.download = 'oteemou_backup_' + new Date().toISOString().split('T')[0] + '.json';
   a.click();
   URL.revokeObjectURL(url);
-  showToast('📤 Δεδομένα εξήχθησαν!', 'success');
+  showToast('\U0001f4e4 \u0394\u03b5\u03b4\u03bf\u03bc\u03ad\u03bd\u03b1 \u03b5\u03be\u03ae\u03c7\u03b8\u03b7\u03c3\u03b1\u03bd!', 'success');
 }
 
 function importData(event) {
@@ -930,41 +992,46 @@ function importData(event) {
   reader.onload = function(e) {
     try {
       const data = JSON.parse(e.target.result);
-      if (!data.user) throw new Error('Invalid data');
-      if (!confirm('Αυτό θα αντικαταστήσει όλα τα τρέχοντα δεδομένα. Συνέχεια;')) return;
+      if (!data.user) throw new Error('Invalid backup file');
       saveData(data);
-      showToast('📥 Δεδομένα εισήχθησαν!', 'success');
-      setTimeout(function() { location.reload(); }, 1000);
+      showToast('\U0001f4e5 \u0394\u03b5\u03b4\u03bf\u03bc\u03ad\u03bd\u03b1 \u03b5\u03b9\u03c3\u03ae\u03c7\u03b8\u03b7\u03c3\u03b1\u03bd! \u039a\u03ac\u03bd\u03b5 reload...', 'success');
+      setTimeout(function() { location.reload(); }, 1500);
     } catch (err) {
-      showToast('❌ Μη έγκυρο αρχείο!', 'error');
+      showToast('\u274c \u039c\u03b7 \u03ad\u03b3\u03ba\u03c5\u03c1\u03bf \u03b1\u03c1\u03c7\u03b5\u03af\u03bf backup!', 'error');
     }
   };
   reader.readAsText(file);
+  event.target.value = '';
 }
 
 // ===== UI HELPERS =====
 
 function showLoading(show) {
-  document.getElementById('loadingOverlay').classList.toggle('active', show);
+  document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
 }
 
-function showToast(msg, type) {
-  type = type || '';
+function showToast(message, type) {
   const container = document.getElementById('toastContainer');
+  if (!container) return;
+
   const toast = document.createElement('div');
-  toast.className = 'toast ' + type;
-  toast.textContent = msg;
+  toast.className = 'toast ' + (type || '');
+  toast.textContent = message;
   container.appendChild(toast);
 
   setTimeout(function() {
     toast.style.opacity = '0';
+    toast.style.transform = 'translateX(100%)';
+    toast.style.transition = 'all 0.3s ease';
     setTimeout(function() { toast.remove(); }, 300);
   }, 3000);
 }
 
 function showConfetti() {
   const container = document.getElementById('confettiContainer');
-  const colors = ['#FF6B35', '#7B2D8E', '#FFD700', '#2ECC71', '#E74C3C', '#3498DB'];
+  if (!container) return;
+
+  const colors = ['#FF6B35', '#7B2D8E', '#FFD700', '#2ECC71', '#E74C3C', '#3498DB', '#FF69B4'];
 
   for (let i = 0; i < 50; i++) {
     const piece = document.createElement('div');
@@ -973,13 +1040,18 @@ function showConfetti() {
     piece.style.background = colors[Math.floor(Math.random() * colors.length)];
     piece.style.width = (Math.random() * 8 + 4) + 'px';
     piece.style.height = (Math.random() * 8 + 4) + 'px';
-    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
-    piece.style.animationDuration = (Math.random() * 2 + 1) + 's';
-    piece.style.animationDelay = Math.random() * 0.5 + 's';
+    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    piece.style.animationDuration = (Math.random() * 2 + 2) + 's';
+    piece.style.animationDelay = (Math.random() * 0.5) + 's';
     container.appendChild(piece);
-    setTimeout(function() { piece.remove(); }, 3000);
+
+    setTimeout(function() { piece.remove(); }, 4000);
   }
 }
 
-// ===== INIT ON LOAD =====
-document.addEventListener('DOMContentLoaded', init);
+// ===== INIT =====
+
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOMContentLoaded - initializing O tee mou');
+  init();
+});

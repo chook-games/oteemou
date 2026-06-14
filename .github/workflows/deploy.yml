@@ -27,8 +27,8 @@ jobs:
       - name: Inject API Key
         run: |
           # Replace the placeholder with the actual API key from GitHub Secrets
-          sed -i "s/__DEEPSEEK_API_KEY__/${{ secrets.DEEPSEEK_API_KEY }}/g" index.html
-          echo "API key injected successfully"
+          sed -i "s/__DEEPSEEK_API_KEY__/${{ secrets.DEEPSEEK_API_KEY }}/g" app.js
+          echo "API key injected successfully into app.js"
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

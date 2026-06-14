@@ -264,7 +264,7 @@ async function doSearch() {
   const cacheKey = query.toLowerCase().trim();
   if (cache[cacheKey]) {
     displayResults(cache[cacheKey], query);
-    showToast('\U0001f4e6 \u0391\u03c0\u03cc \u03c4\u03b7\u03bd \u03ba\u03c1\u03c5\u03c6\u03ae \u03bc\u03bd\u03ae\u03bc\u03b7! (cache)', 'success');
+    showToast('\u{1f4e6} \u0391\u03c0\u03cc \u03c4\u03b7\u03bd \u03ba\u03c1\u03c5\u03c6\u03ae \u03bc\u03bd\u03ae\u03bc\u03b7! (cache)', 'success');
     return;
   }
 
@@ -305,7 +305,7 @@ async function doSearch() {
     if (e.message && e.message.includes('401')) {
       showToast('\u26a0\ufe0f \u039b\u03ac\u03b8\u03bf\u03c2 API key! \u03a0\u03ae\u03b3\u03b1\u03b9\u03bd\u03b5 \u03c3\u03c4\u03b9\u03c2 \u03a1\u03c5\u03b8\u03bc\u03af\u03c3\u03b5\u03b9\u03c2 (\u2699\ufe0f) \u03ba\u03b1\u03b9 \u03b2\u03ac\u03bb\u03b5 \u03c4\u03bf \u03c3\u03c9\u03c3\u03c4\u03cc API key.', 'error');
     } else {
-      showToast('\U0001f605 \u039f \u03b1\u03bb\u03b3\u03cc\u03c1\u03b9\u03b8\u03bc\u03bf\u03c2 \u03c0\u03ae\u03b3\u03b5 \u03b3\u03b9\u03b1 \u03ba\u03b1\u03c6\u03ad. \u0394\u03bf\u03ba\u03af\u03bc\u03b1\u03c3\u03b5 \u03be\u03b1\u03bd\u03ac!', 'error');
+      showToast('\u{1f605} \u039f \u03b1\u03bb\u03b3\u03cc\u03c1\u03b9\u03b8\u03bc\u03bf\u03c2 \u03c0\u03ae\u03b3\u03b5 \u03b3\u03b9\u03b1 \u03ba\u03b1\u03c6\u03ad. \u0394\u03bf\u03ba\u03af\u03bc\u03b1\u03c3\u03b5 \u03be\u03b1\u03bd\u03ac!', 'error');
     }
   } finally {
     showLoading(false);
@@ -363,8 +363,8 @@ function displayResults(products, query) {
 
     card.innerHTML =
       '<div class="product-image">' +
-        '<span style="font-size:4rem;opacity:0.5;">\U0001f5bc\ufe0f</span>' +
-        (p.rarity === 100 ? '<span style="position:absolute;top:8px;right:8px;font-size:2rem;animation:crownBounce 1.5s infinite;">\U0001f451</span>' : '') +
+        '<span style="font-size:4rem;opacity:0.5;">\u{1f5bc}\ufe0f</span>' +
+        (p.rarity === 100 ? '<span style="position:absolute;top:8px;right:8px;font-size:2rem;animation:crownBounce 1.5s infinite;">\u{1f451}</span>' : '') +
       '</div>' +
       '<div class="product-body">' +
         '<div class="product-name">' + escapeHtml(p.name) + '</div>' +
@@ -375,14 +375,14 @@ function displayResults(products, query) {
           '<span class="stars-filled">' + '\u2605'.repeat(fullStars) + '</span><span class="stars-empty">' + '\u2606'.repeat(5 - fullStars) + '</span>' +
           '<span style="font-size:0.8rem;color:#6B5B7B;margin-left:4px;">(' + totalReviews + ' \u03ba\u03c1\u03b9\u03c4\u03b9\u03ba\u03ad\u03c2)</span>' +
         '</div>' +
-        '<div class="product-meta">\U0001f6d2 ' + (p.totalPurchases || 0) + ' \u03b1\u03b3\u03bf\u03c1\u03ad\u03c2</div>' +
+        '<div class="product-meta">\u{1f6d2} ' + (p.totalPurchases || 0) + ' \u03b1\u03b3\u03bf\u03c1\u03ad\u03c2</div>' +
         '<div class="product-actions">' +
-          '<button class="' + (isFav ? 'btn-fav active' : 'btn-fav') + '" onclick="toggleFav(' + i + ')">' + (isFav ? '\u2764\ufe0f' : '\U0001f90d') + ' \u0391\u03b3\u03b1\u03c0\u03b7\u03bc\u03ad\u03bd\u03b1</button>' +
-          '<button class="' + (inCart ? 'btn-fav' : 'btn-cart') + '" onclick="toggleCart(' + i + ')">' + (inCart ? '\u2705' : '\U0001f6d2') + ' ' + (inCart ? '\u03a3\u03c4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9' : '\u039a\u03b1\u03bb\u03ac\u03b8\u03b9') + '</button>' +
+          '<button class="' + (isFav ? 'btn-fav active' : 'btn-fav') + '" onclick="toggleFav(' + i + ')">' + (isFav ? '\u2764\ufe0f' : '\u{1f90d}') + ' \u0391\u03b3\u03b1\u03c0\u03b7\u03bc\u03ad\u03bd\u03b1</button>' +
+          '<button class="' + (inCart ? 'btn-fav' : 'btn-cart') + '" onclick="toggleCart(' + i + ')">' + (inCart ? '\u2705' : '\u{1f6d2}') + ' ' + (inCart ? '\u03a3\u03c4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9' : '\u039a\u03b1\u03bb\u03ac\u03b8\u03b9') + '</button>' +
           '<button class="btn-buy" onclick="buyNow(' + i + ')">\u0391\u03b3\u03bf\u03c1\u03ac \u03c4\u03ce\u03c1\u03b1</button>' +
         '</div>' +
         '<div class="reviews-section">' +
-          '<h4>\U0001f4ac \u039a\u03c1\u03b9\u03c4\u03b9\u03ba\u03ad\u03c2 (' + totalReviews + ')</h4>' +
+          '<h4>\u{1f4ac} \u039a\u03c1\u03b9\u03c4\u03b9\u03ba\u03ad\u03c2 (' + totalReviews + ')</h4>' +
           allReviews.map(function(r) {
             return '<div class="review-item">' +
               '<div class="review-header">' +
@@ -404,7 +404,7 @@ function displayResults(products, query) {
     // Rare find notification
     if (p.rarity > 90) {
       setTimeout(function() {
-        showToast('\U0001f525 \u03a3\u03c0\u03ac\u03bd\u03b9\u03bf \u03b5\u03cd\u03c1\u03b7\u03bc\u03b1! "' + p.name + '" (\u2b50' + p.rarity + ') \u03b8\u03b1 \u03bc\u03c0\u03b5\u03b9\u03c2 \u03c3\u03c4\u03bf Hall of Fame;', 'warning');
+        showToast('\u{1f525} \u03a3\u03c0\u03ac\u03bd\u03b9\u03bf \u03b5\u03cd\u03c1\u03b7\u03bc\u03b1! "' + p.name + '" (\u2b50' + p.rarity + ') \u03b8\u03b1 \u03bc\u03c0\u03b5\u03b9\u03c2 \u03c3\u03c4\u03bf Hall of Fame;', 'warning');
         addRareFind(p);
       }, 1000);
     }
@@ -447,7 +447,7 @@ function toggleFav(idx) {
 
   if (existing >= 0) {
     d.favorites.splice(existing, 1);
-    showToast('\U0001f494 \u0391\u03c6\u03b1\u03b9\u03c1\u03ad\u03b8\u03b7\u03ba\u03b5 \u03b1\u03c0\u03cc \u03b1\u03b3\u03b1\u03c0\u03b7\u03bc\u03ad\u03bd\u03b1', 'error');
+    showToast('\u{1f494} \u0391\u03c6\u03b1\u03b9\u03c1\u03ad\u03b8\u03b7\u03ba\u03b5 \u03b1\u03c0\u03cc \u03b1\u03b3\u03b1\u03c0\u03b7\u03bc\u03ad\u03bd\u03b1', 'error');
   } else {
     d.favorites.push(product);
     showToast('\u2764\ufe0f \u03a0\u03c1\u03bf\u03c3\u03c4\u03ad\u03b8\u03b7\u03ba\u03b5 \u03c3\u03c4\u03b1 \u03b1\u03b3\u03b1\u03c0\u03b7\u03bc\u03ad\u03bd\u03b1!', 'success');
@@ -485,10 +485,10 @@ function toggleCart(idx) {
 
   if (existing >= 0) {
     d.cart.splice(existing, 1);
-    showToast('\U0001f5d1\ufe0f \u0391\u03c6\u03b1\u03b9\u03c1\u03ad\u03b8\u03b7\u03ba\u03b5 \u03b1\u03c0\u03cc \u03c4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9', 'error');
+    showToast('\u{1f5d1}\ufe0f \u0391\u03c6\u03b1\u03b9\u03c1\u03ad\u03b8\u03b7\u03ba\u03b5 \u03b1\u03c0\u03cc \u03c4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9', 'error');
   } else {
     d.cart.push(product);
-    showToast('\U0001f6d2 \u03a0\u03c1\u03bf\u03c3\u03c4\u03ad\u03b8\u03b7\u03ba\u03b5 \u03c3\u03c4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9!', 'success');
+    showToast('\u{1f6d2} \u03a0\u03c1\u03bf\u03c3\u03c4\u03ad\u03b8\u03b7\u03ba\u03b5 \u03c3\u03c4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9!', 'success');
   }
 
   saveData(d);
@@ -545,7 +545,7 @@ function buyNow(idx) {
   const product = { name: name, description: desc, price: price, rarity: rarity };
 
   lastPurchasedProduct = product;
-  document.getElementById('purchaseProductName').textContent = '"' + name + '" \u03ad\u03c1\u03c7\u03b5\u03c4\u03b1\u03b9... \u03b1\u03c0\u03cc \u03ac\u03bb\u03bb\u03b7 \u03b4\u03b9\u03ac\u03c3\u03c4\u03b1\u03c3\u03b7! \U0001f680';
+  document.getElementById('purchaseProductName').textContent = '"' + name + '" \u03ad\u03c1\u03c7\u03b5\u03c4\u03b1\u03b9... \u03b1\u03c0\u03cc \u03ac\u03bb\u03bb\u03b7 \u03b4\u03b9\u03ac\u03c3\u03c4\u03b1\u03c3\u03b7! \u{1f680}';
   document.getElementById('purchaseOverlay').style.display = 'flex';
 
   // Add to purchase history
@@ -640,14 +640,14 @@ function addRareFind(product) {
 // ===== BADGES =====
 
 const BADGE_DEFS = [
-  { id: 'explorer', name: '\u0395\u03be\u03b5\u03c1\u03b5\u03c5\u03bd\u03b7\u03c4\u03ae\u03c2', icon: '\U0001f50d', desc: '\u03a0\u03c1\u03ce\u03c4\u03b7 \u03b1\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7', check: function(d) { return (d.points || 0) >= 10; } },
-  { id: 'collector', name: '\u03a3\u03c5\u03bb\u03bb\u03ad\u03ba\u03c4\u03b7\u03c2', icon: '\U0001f4e6', desc: '500+ \u03c0\u03cc\u03bd\u03c4\u03bf\u03b9', check: function(d) { return (d.points || 0) >= 500; } },
-  { id: 'legend', name: '\u0398\u03c1\u03cd\u03bb\u03bf\u03c2 \u03c4\u03bf\u03c5 O tee mou', icon: '\U0001f451', desc: '\u0392\u03c1\u03b5\u03c2 rarity 100', check: function(d) { return d.rareFinds && d.rareFinds.some(function(r) { return r.rarity === 100; }); } },
-  { id: 'hearts', name: '\u039a\u03b1\u03c1\u03b4\u03bf\u03cd\u03bb\u03b5\u03c2', icon: '\U0001f496', desc: '5 \u03b1\u03b3\u03b1\u03c0\u03b7\u03bc\u03ad\u03bd\u03b1', check: function(d) { return d.favorites && d.favorites.length >= 5; } },
-  { id: 'shopaholic', name: 'Shopaholic', icon: '\U0001f6cd\ufe0f', desc: '3 \u03b1\u03b3\u03bf\u03c1\u03ad\u03c2', check: function(d) { return d.purchaseHistory && d.purchaseHistory.length >= 3; } },
-  { id: 'hunter', name: '\u039a\u03c5\u03bd\u03b7\u03b3\u03cc\u03c2 \u03a3\u03c0\u03b1\u03bd\u03af\u03c9\u03bd', icon: '\U0001f3c6', desc: '3 \u03c3\u03c0\u03ac\u03bd\u03b9\u03b1 \u03b5\u03c5\u03c1\u03ae\u03bc\u03b1\u03c4\u03b1', check: function(d) { return d.rareFinds && d.rareFinds.length >= 3; } },
-  { id: 'hoarder', name: '\u039c\u03b1\u03b6\u03b5\u03cd\u03c4\u03c1\u03b9\u03b1', icon: '\U0001f5c4\ufe0f', desc: '10 \u03c3\u03c4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9', check: function(d) { return d.cart && d.cart.length >= 10; } },
-  { id: 'reviewer', name: '\u039a\u03c1\u03b9\u03c4\u03b9\u03ba\u03cc\u03c2', icon: '\U0001f4dd', desc: '\u0393\u03c1\u03ac\u03c8\u03b5 3 \u03ba\u03c1\u03b9\u03c4\u03b9\u03ba\u03ad\u03c2', check: function(d) {
+  { id: 'explorer', name: '\u0395\u03be\u03b5\u03c1\u03b5\u03c5\u03bd\u03b7\u03c4\u03ae\u03c2', icon: '\u{1f50d}', desc: '\u03a0\u03c1\u03ce\u03c4\u03b7 \u03b1\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7', check: function(d) { return (d.points || 0) >= 10; } },
+  { id: 'collector', name: '\u03a3\u03c5\u03bb\u03bb\u03ad\u03ba\u03c4\u03b7\u03c2', icon: '\u{1f4e6}', desc: '500+ \u03c0\u03cc\u03bd\u03c4\u03bf\u03b9', check: function(d) { return (d.points || 0) >= 500; } },
+  { id: 'legend', name: '\u0398\u03c1\u03cd\u03bb\u03bf\u03c2 \u03c4\u03bf\u03c5 O tee mou', icon: '\u{1f451}', desc: '\u0392\u03c1\u03b5\u03c2 rarity 100', check: function(d) { return d.rareFinds && d.rareFinds.some(function(r) { return r.rarity === 100; }); } },
+  { id: 'hearts', name: '\u039a\u03b1\u03c1\u03b4\u03bf\u03cd\u03bb\u03b5\u03c2', icon: '\u{1f496}', desc: '5 \u03b1\u03b3\u03b1\u03c0\u03b7\u03bc\u03ad\u03bd\u03b1', check: function(d) { return d.favorites && d.favorites.length >= 5; } },
+  { id: 'shopaholic', name: 'Shopaholic', icon: '\u{1f6cd}\ufe0f', desc: '3 \u03b1\u03b3\u03bf\u03c1\u03ad\u03c2', check: function(d) { return d.purchaseHistory && d.purchaseHistory.length >= 3; } },
+  { id: 'hunter', name: '\u039a\u03c5\u03bd\u03b7\u03b3\u03cc\u03c2 \u03a3\u03c0\u03b1\u03bd\u03af\u03c9\u03bd', icon: '\u{1f3c6}', desc: '3 \u03c3\u03c0\u03ac\u03bd\u03b9\u03b1 \u03b5\u03c5\u03c1\u03ae\u03bc\u03b1\u03c4\u03b1', check: function(d) { return d.rareFinds && d.rareFinds.length >= 3; } },
+  { id: 'hoarder', name: '\u039c\u03b1\u03b6\u03b5\u03cd\u03c4\u03c1\u03b9\u03b1', icon: '\u{1f5c4}\ufe0f', desc: '10 \u03c3\u03c4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9', check: function(d) { return d.cart && d.cart.length >= 10; } },
+  { id: 'reviewer', name: '\u039a\u03c1\u03b9\u03c4\u03b9\u03ba\u03cc\u03c2', icon: '\u{1f4dd}', desc: '\u0393\u03c1\u03ac\u03c8\u03b5 3 \u03ba\u03c1\u03b9\u03c4\u03b9\u03ba\u03ad\u03c2', check: function(d) {
     const r = d.userReviews || {};
     return Object.values(r).reduce(function(a, b) { return a + b.length; }, 0) >= 3;
   }}
@@ -662,7 +662,7 @@ function checkBadges(d) {
     if (!d.badges.includes(b.id) && b.check(d)) {
       d.badges.push(b.id);
       changed = true;
-      showToast('\U0001f3c5 \u039d\u03ad\u03bf badge: ' + b.name + '!', 'success');
+      showToast('\u{1f3c5} \u039d\u03ad\u03bf badge: ' + b.name + '!', 'success');
     }
   });
 
@@ -723,19 +723,19 @@ function showProfile() {
     '</div>';
   }).join('');
 
-  showModal('\U0001f464 ' + d.user.name,
+  showModal('\u{1f464} ' + d.user.name,
     '<div style="text-align:center;margin-bottom:16px;">' +
       '<div style="font-size:3rem;">\u2b50</div>' +
       '<h3>' + (d.points || 0) + ' \u03c0\u03cc\u03bd\u03c4\u03bf\u03b9</h3>' +
       '<p style="color:#6B5B7B;font-size:0.85rem;">\u0395\u03be\u03b5\u03c1\u03b5\u03cd\u03bd\u03b7\u03c3\u03b5 \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03ba\u03b5\u03c1\u03b4\u03af\u03c3\u03b5\u03b9\u03c2 \u03c0\u03b5\u03c1\u03b9\u03c3\u03c3\u03cc\u03c4\u03b5\u03c1\u03bf\u03c5\u03c2!</p>' +
     '</div>' +
-    '<h3 style="margin-bottom:10px;">\U0001f3c5 Badges (' + badges.length + '/' + BADGE_DEFS.length + ')</h3>' +
+    '<h3 style="margin-bottom:10px;">\u{1f3c5} Badges (' + badges.length + '/' + BADGE_DEFS.length + ')</h3>' +
     '<div class="badge-grid">' + allBadges + '</div>' +
     '<div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">' +
-      '<button onclick="showLeaderboard()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">\U0001f3c6 Leaderboard</button>' +
-      '<button onclick="showHallOfFame()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">\U0001f396\ufe0f Hall of Fame</button>' +
-      '<button onclick="exportData()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">\U0001f4e4 \u0395\u03be\u03b1\u03b3\u03c9\u03b3\u03ae</button>' +
-      '<button onclick="document.getElementById(\'importFile\').click()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">\U0001f4e5 \u0395\u03b9\u03c3\u03b1\u03b3\u03c9\u03b3\u03ae</button>' +
+      '<button onclick="showLeaderboard()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">\u{1f3c6} Leaderboard</button>' +
+      '<button onclick="showHallOfFame()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">\u{1f396}\ufe0f Hall of Fame</button>' +
+      '<button onclick="exportData()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">\u{1f4e4} \u0395\u03be\u03b1\u03b3\u03c9\u03b3\u03ae</button>' +
+      '<button onclick="document.getElementById(\'importFile\').click()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">\u{1f4e5} \u0395\u03b9\u03c3\u03b1\u03b3\u03c9\u03b3\u03ae</button>' +
       '<input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">' +
     '</div>'
   );
@@ -764,7 +764,7 @@ function showLeaderboard() {
     '</div>';
   }).join('');
 
-  showModal('\U0001f3c6 Top \u0395\u03c5\u03c1\u03ae\u03bc\u03b1\u03c4\u03b1 (Leaderboard)',
+  showModal('\u{1f3c6} Top \u0395\u03c5\u03c1\u03ae\u03bc\u03b1\u03c4\u03b1 (Leaderboard)',
     '<p style="color:#6B5B7B;margin-bottom:16px;">\u039f\u03b9 \u03ba\u03bf\u03c1\u03c5\u03c6\u03b1\u03af\u03bf\u03b9 \u03b5\u03be\u03b5\u03c1\u03b5\u03c5\u03bd\u03b7\u03c4\u03ad\u03c2 \u03c4\u03bf\u03c5 O tee mou!</p>' +
     items
   );
@@ -778,21 +778,21 @@ function showHallOfFame() {
 
   const rare = d.rareFinds || [];
   if (!rare.length) {
-    showModal('\U0001f396\ufe0f Hall of Fame',
-      '<p style="color:#6B5B7B;text-align:center;">\u0394\u03b5\u03bd \u03ad\u03c7\u03b5\u03b9\u03c2 \u03b2\u03c1\u03b5\u03b9 \u03b1\u03ba\u03cc\u03bc\u03b1 \u03c3\u03c0\u03ac\u03bd\u03b9\u03b1 \u03b5\u03c5\u03c1\u03ae\u03bc\u03b1\u03c4\u03b1! \U0001f50d \u03a3\u03c5\u03bd\u03ad\u03c7\u03b9\u03c3\u03b5 \u03bd\u03b1 \u03c8\u03ac\u03c7\u03bd\u03b5\u03b9\u03c2!</p>'
+    showModal('\u{1f396}\ufe0f Hall of Fame',
+      '<p style="color:#6B5B7B;text-align:center;">\u0394\u03b5\u03bd \u03ad\u03c7\u03b5\u03b9\u03c2 \u03b2\u03c1\u03b5\u03b9 \u03b1\u03ba\u03cc\u03bc\u03b1 \u03c3\u03c0\u03ac\u03bd\u03b9\u03b1 \u03b5\u03c5\u03c1\u03ae\u03bc\u03b1\u03c4\u03b1! \u{1f50d} \u03a3\u03c5\u03bd\u03ad\u03c7\u03b9\u03c3\u03b5 \u03bd\u03b1 \u03c8\u03ac\u03c7\u03bd\u03b5\u03b9\u03c2!</p>'
     );
     return;
   }
 
   const items = rare.map(function(r) {
     return '<div class="hall-item">' +
-      '<div class="trophy">' + (r.rarity === 100 ? '\U0001f451' : '\U0001f3c6') + '</div>' +
+      '<div class="trophy">' + (r.rarity === 100 ? '\u{1f451}' : '\u{1f3c6}') + '</div>' +
       '<div class="hall-name">' + escapeHtml(r.name) + '</div>' +
       '<div class="hall-rarity">\u2b50 \u03a3\u03c0\u03b1\u03bd\u03b9\u03cc\u03c4\u03b7\u03c4\u03b1: ' + r.rarity + '/100</div>' +
     '</div>';
   }).join('');
 
-  showModal('\U0001f396\ufe0f Hall of Fame',
+  showModal('\u{1f396}\ufe0f Hall of Fame',
     '<p style="color:#6B5B7B;margin-bottom:16px;">\u03a4\u03b1 \u03c3\u03c0\u03b1\u03bd\u03b9\u03cc\u03c4\u03b5\u03c1\u03b1 \u03b5\u03c5\u03c1\u03ae\u03bc\u03b1\u03c4\u03ac \u03c3\u03bf\u03c5!</p>' +
     '<div class="hall-grid">' + items + '</div>'
   );
@@ -814,12 +814,12 @@ function showFavorites() {
 
   const items = favs.map(function(f, i) {
     return '<div class="cart-item">' +
-      '<div class="cart-img">\U0001f5bc\ufe0f</div>' +
+      '<div class="cart-img">\u{1f5bc}\ufe0f</div>' +
       '<div class="cart-info">' +
         '<div class="cart-name">' + escapeHtml(f.name) + '</div>' +
         '<div class="cart-price">\u20ac' + formatPrice(f.price) + ' \u2b50' + (f.rarity || 0) + '</div>' +
       '</div>' +
-      '<button class="cart-remove" onclick="removeFav(' + i + ')">\U0001f5d1\ufe0f</button>' +
+      '<button class="cart-remove" onclick="removeFav(' + i + ')">\u{1f5d1}\ufe0f</button>' +
     '</div>';
   }).join('');
 
@@ -836,7 +836,7 @@ function removeFav(idx) {
   if (idx >= 0 && idx < d.favorites.length) {
     d.favorites.splice(idx, 1);
     saveData(d);
-    showToast('\U0001f494 \u0391\u03c6\u03b1\u03b9\u03c1\u03ad\u03b8\u03b7\u03ba\u03b5 \u03b1\u03c0\u03cc \u03b1\u03b3\u03b1\u03c0\u03b7\u03bc\u03ad\u03bd\u03b1', 'error');
+    showToast('\u{1f494} \u0391\u03c6\u03b1\u03b9\u03c1\u03ad\u03b8\u03b7\u03ba\u03b5 \u03b1\u03c0\u03cc \u03b1\u03b3\u03b1\u03c0\u03b7\u03bc\u03ad\u03bd\u03b1', 'error');
     showFavorites(); // Re-render
   }
 }
@@ -849,8 +849,8 @@ function showCart() {
 
   const cart = d.cart || [];
   if (!cart.length) {
-    showModal('\U0001f6d2 \u039a\u03b1\u03bb\u03ac\u03b8\u03b9',
-      '<p style="color:#6B5B7B;text-align:center;">\u03a4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9 \u03c3\u03bf\u03c5 \u03b5\u03af\u03bd\u03b1\u03b9 \u03ac\u03b4\u03b5\u03b9\u03bf! \U0001f6d2 \u03a8\u03ac\u03be\u03b5 \u03b3\u03b9\u03b1 \u03b1\u03c0\u03af\u03b8\u03b1\u03bd\u03b1 \u03c0\u03c1\u03bf\u03ca\u03cc\u03bd\u03c4\u03b1!</p>'
+    showModal('\u{1f6d2} \u039a\u03b1\u03bb\u03ac\u03b8\u03b9',
+      '<p style="color:#6B5B7B;text-align:center;">\u03a4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9 \u03c3\u03bf\u03c5 \u03b5\u03af\u03bd\u03b1\u03b9 \u03ac\u03b4\u03b5\u03b9\u03bf! \u{1f6d2} \u03a8\u03ac\u03be\u03b5 \u03b3\u03b9\u03b1 \u03b1\u03c0\u03af\u03b8\u03b1\u03bd\u03b1 \u03c0\u03c1\u03bf\u03ca\u03cc\u03bd\u03c4\u03b1!</p>'
     );
     return;
   }
@@ -859,22 +859,22 @@ function showCart() {
 
   const items = cart.map(function(c, i) {
     return '<div class="cart-item">' +
-      '<div class="cart-img">\U0001f5bc\ufe0f</div>' +
+      '<div class="cart-img">\u{1f5bc}\ufe0f</div>' +
       '<div class="cart-info">' +
         '<div class="cart-name">' + escapeHtml(c.name) + '</div>' +
         '<div class="cart-price">\u20ac' + formatPrice(c.price) + '</div>' +
       '</div>' +
-      '<button class="cart-remove" onclick="removeFromCart(' + i + ')">\U0001f5d1\ufe0f</button>' +
+      '<button class="cart-remove" onclick="removeFromCart(' + i + ')">\u{1f5d1}\ufe0f</button>' +
     '</div>';
   }).join('');
 
-  showModal('\U0001f6d2 \u039a\u03b1\u03bb\u03ac\u03b8\u03b9 (' + cart.length + ')',
+  showModal('\u{1f6d2} \u039a\u03b1\u03bb\u03ac\u03b8\u03b9 (' + cart.length + ')',
     '<div style="margin-bottom:16px;">' + items + '</div>' +
     '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:2px solid #FFD4B8;margin-bottom:12px;">' +
       '<span style="font-weight:600;">\u03a3\u03cd\u03bd\u03bf\u03bb\u03bf:</span>' +
       '<span style="font-size:1.3rem;font-weight:700;color:#FF6B35;">\u20ac' + formatPrice(total) + '</span>' +
     '</div>' +
-    '<button onclick="checkoutAll()" style="width:100%;padding:12px 28px;border:none;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;background:linear-gradient(135deg,#FF6B35,#7B2D8E);color:#fff;">\u0391\u03b3\u03bf\u03c1\u03ac \u03cc\u03bb\u03c9\u03bd \U0001f680</button>'
+    '<button onclick="checkoutAll()" style="width:100%;padding:12px 28px;border:none;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;background:linear-gradient(135deg,#FF6B35,#7B2D8E);color:#fff;">\u0391\u03b3\u03bf\u03c1\u03ac \u03cc\u03bb\u03c9\u03bd \u{1f680}</button>'
   );
 }
 
@@ -886,7 +886,7 @@ function removeFromCart(idx) {
     d.cart.splice(idx, 1);
     saveData(d);
     updateCartBadge();
-    showToast('\U0001f5d1\ufe0f \u0391\u03c6\u03b1\u03b9\u03c1\u03ad\u03b8\u03b7\u03ba\u03b5 \u03b1\u03c0\u03cc \u03c4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9', 'error');
+    showToast('\u{1f5d1}\ufe0f \u0391\u03c6\u03b1\u03b9\u03c1\u03ad\u03b8\u03b7\u03ba\u03b5 \u03b1\u03c0\u03cc \u03c4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9', 'error');
     showCart(); // Re-render
   }
 }
@@ -907,7 +907,7 @@ function checkoutAll() {
   checkBadges(d);
 
   closeModal();
-  showToast('\U0001f389 \u0391\u03b3\u03cc\u03c1\u03b1\u03c3\u03b5\u03c2 \u03c4\u03b1 \u03c0\u03ac\u03bd\u03c4\u03b1! (\u20ac' + formatPrice(total) + ')', 'success');
+  showToast('\u{1f389} \u0391\u03b3\u03cc\u03c1\u03b1\u03c3\u03b5\u03c2 \u03c4\u03b1 \u03c0\u03ac\u03bd\u03c4\u03b1! (\u20ac' + formatPrice(total) + ')', 'success');
   showConfetti();
 }
 
@@ -919,27 +919,27 @@ function showSettings() {
 
   showModal('\u2699\ufe0f \u03a1\u03c5\u03b8\u03bc\u03af\u03c3\u03b5\u03b9\u03c2',
     '<div class="settings-group">' +
-      '<h3>\U0001f511 API Key DeepSeek</h3>' +
+      '<h3>\u{1f511} API Key DeepSeek</h3>' +
       '<div class="form-group">' +
         '<input type="password" id="settingsApiKey" value="' + (d.apiKey || '') + '" placeholder="sk-..." style="width:100%;padding:12px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.95rem;background:#FFF8F0;color:#2D1B3D;box-sizing:border-box;">' +
       '</div>' +
-      '<button onclick="saveSettingsApiKey()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">\u0391\u03c0\u03bf\u03b8\u03ae\u03ba\u03b5\u03c5\u03c3\u03b7 \U0001f4be</button>' +
+      '<button onclick="saveSettingsApiKey()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">\u0391\u03c0\u03bf\u03b8\u03ae\u03ba\u03b5\u03c5\u03c3\u03b7 \u{1f4be}</button>' +
     '</div>' +
     '<div class="settings-group">' +
-      '<h3>\U0001f319 \u0395\u03bc\u03c6\u03ac\u03bd\u03b9\u03c3\u03b7</h3>' +
-      '<button onclick="toggleDarkMode()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">' + (d.darkMode ? '\u2600\ufe0f \u03a6\u03c9\u03c4\u03b5\u03b9\u03bd\u03ae \u03bb\u03b5\u03b9\u03c4\u03bf\u03c5\u03c1\u03b3\u03af\u03b1' : '\U0001f319 \u03a3\u03ba\u03bf\u03c4\u03b5\u03b9\u03bd\u03ae \u03bb\u03b5\u03b9\u03c4\u03bf\u03c5\u03c1\u03b3\u03af\u03b1') + '</button>' +
+      '<h3>\u{1f319} \u0395\u03bc\u03c6\u03ac\u03bd\u03b9\u03c3\u03b7</h3>' +
+      '<button onclick="toggleDarkMode()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">' + (d.darkMode ? '\u2600\ufe0f \u03a6\u03c9\u03c4\u03b5\u03b9\u03bd\u03ae \u03bb\u03b5\u03b9\u03c4\u03bf\u03c5\u03c1\u03b3\u03af\u03b1' : '\u{1f319} \u03a3\u03ba\u03bf\u03c4\u03b5\u03b9\u03bd\u03ae \u03bb\u03b5\u03b9\u03c4\u03bf\u03c5\u03c1\u03b3\u03af\u03b1') + '</button>' +
     '</div>' +
     '<div class="settings-group">' +
-      '<h3>\U0001f4be \u0394\u03b5\u03b4\u03bf\u03bc\u03ad\u03bd\u03b1</h3>' +
+      '<h3>\u{1f4be} \u0394\u03b5\u03b4\u03bf\u03bc\u03ad\u03bd\u03b1</h3>' +
       '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
-        '<button onclick="exportData()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">\U0001f4e4 \u0395\u03be\u03b1\u03b3\u03c9\u03b3\u03ae</button>' +
-        '<button onclick="document.getElementById(\'importFile\').click()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">\U0001f4e5 \u0395\u03b9\u03c3\u03b1\u03b3\u03c9\u03b3\u03ae</button>' +
+        '<button onclick="exportData()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">\u{1f4e4} \u0395\u03be\u03b1\u03b3\u03c9\u03b3\u03ae</button>' +
+        '<button onclick="document.getElementById(\'importFile\').click()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">\u{1f4e5} \u0395\u03b9\u03c3\u03b1\u03b3\u03c9\u03b3\u03ae</button>' +
         '<input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">' +
       '</div>' +
     '</div>' +
     '<div class="settings-group">' +
       '<h3>\u26a0\ufe0f \u0395\u03c0\u03b9\u03ba\u03af\u03bd\u03b4\u03c5\u03bd\u03b7 \u03b6\u03ce\u03bd\u03b7</h3>' +
-      '<button onclick="clearAllData()" style="padding:8px 16px;border:2px solid #E74C3C;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF0F0;color:#E74C3C;">\U0001f5d1\ufe0f \u0394\u03b9\u03b1\u03b3\u03c1\u03b1\u03c6\u03ae \u03cc\u03bb\u03c9\u03bd \u03c4\u03c9\u03bd \u03b4\u03b5\u03b4\u03bf\u03bc\u03ad\u03bd\u03c9\u03bd</button>' +
+      '<button onclick="clearAllData()" style="padding:8px 16px;border:2px solid #E74C3C;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF0F0;color:#E74C3C;">\u{1f5d1}\ufe0f \u0394\u03b9\u03b1\u03b3\u03c1\u03b1\u03c6\u03ae \u03cc\u03bb\u03c9\u03bd \u03c4\u03c9\u03bd \u03b4\u03b5\u03b4\u03bf\u03bc\u03ad\u03bd\u03c9\u03bd</button>' +
     '</div>'
   );
 }
@@ -963,7 +963,7 @@ function toggleDarkMode() {
 
   if (d.darkMode) {
     document.documentElement.setAttribute('data-theme', 'dark');
-    showToast('\U0001f319 \u03a3\u03ba\u03bf\u03c4\u03b5\u03b9\u03bd\u03ae \u03bb\u03b5\u03b9\u03c4\u03bf\u03c5\u03c1\u03b3\u03af\u03b1 \u03b5\u03bd\u03b5\u03c1\u03b3\u03bf\u03c0\u03bf\u03b9\u03ae\u03b8\u03b7\u03ba\u03b5!', 'success');
+    showToast('\u{1f319} \u03a3\u03ba\u03bf\u03c4\u03b5\u03b9\u03bd\u03ae \u03bb\u03b5\u03b9\u03c4\u03bf\u03c5\u03c1\u03b3\u03af\u03b1 \u03b5\u03bd\u03b5\u03c1\u03b3\u03bf\u03c0\u03bf\u03b9\u03ae\u03b8\u03b7\u03ba\u03b5!', 'success');
   } else {
     document.documentElement.removeAttribute('data-theme');
     showToast('\u2600\ufe0f \u03a6\u03c9\u03c4\u03b5\u03b9\u03bd\u03ae \u03bb\u03b5\u03b9\u03c4\u03bf\u03c5\u03c1\u03b3\u03af\u03b1 \u03b5\u03bd\u03b5\u03c1\u03b3\u03bf\u03c0\u03bf\u03b9\u03ae\u03b8\u03b7\u03ba\u03b5!', 'success');
@@ -993,7 +993,7 @@ function exportData() {
   a.download = 'oteemou_backup_' + new Date().toISOString().split('T')[0] + '.json';
   a.click();
   URL.revokeObjectURL(url);
-  showToast('\U0001f4e4 \u0394\u03b5\u03b4\u03bf\u03bc\u03ad\u03bd\u03b1 \u03b5\u03be\u03ae\u03c7\u03b8\u03b7\u03c3\u03b1\u03bd!', 'success');
+  showToast('\u{1f4e4} \u0394\u03b5\u03b4\u03bf\u03bc\u03ad\u03bd\u03b1 \u03b5\u03be\u03ae\u03c7\u03b8\u03b7\u03c3\u03b1\u03bd!', 'success');
 }
 
 function importData(event) {
@@ -1006,7 +1006,7 @@ function importData(event) {
       const data = JSON.parse(e.target.result);
       if (!data.user) throw new Error('Invalid backup file');
       saveData(data);
-      showToast('\U0001f4e5 \u0394\u03b5\u03b4\u03bf\u03bc\u03ad\u03bd\u03b1 \u03b5\u03b9\u03c3\u03ae\u03c7\u03b8\u03b7\u03c3\u03b1\u03bd! \u039a\u03ac\u03bd\u03b5 reload...', 'success');
+      showToast('\u{1f4e5} \u0394\u03b5\u03b4\u03bf\u03bc\u03ad\u03bd\u03b1 \u03b5\u03b9\u03c3\u03ae\u03c7\u03b8\u03b7\u03c3\u03b1\u03bd! \u039a\u03ac\u03bd\u03b5 reload...', 'success');
       setTimeout(function() { location.reload(); }, 1500);
     } catch (err) {
       showToast('\u274c \u039c\u03b7 \u03ad\u03b3\u03ba\u03c5\u03c1\u03bf \u03b1\u03c1\u03c7\u03b5\u03af\u03bf backup!', 'error');

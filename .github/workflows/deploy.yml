@@ -27,8 +27,15 @@ jobs:
       - name: Inject API Key
         run: |
           # Replace the placeholder with the actual API key from GitHub Secrets
-          sed -i "s/__DEEPSEEK_API_KEY__/${{ secrets.DEEPSEEK_API_KEY }}/g" app.js
+          # Using | delimiter to avoid issues with / & \ in the API key
+          sed -i "s|__DEEPSEEK_API_KEY__|${{ secrets.DEEPSEEK_API_KEY }}|g" app.js
           echo "API key injected successfully into app.js"
+          # Verify the replacement worked (check that placeholder is gone)
+          if grep -q "__DEEPSEEK_API_KEY__" app.js; then
+            echo "WARNING: Placeholder still present in app.js!"
+            exit 1
+          fi
+          echo "Verification passed: placeholder successfully replaced"
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

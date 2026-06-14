@@ -300,8 +300,8 @@ function handleSignup(){
   let d=getData()||getDefaultData();
   d.user={name:n,email:e,password:p};
   saveData(d);
-  // Generate leaderboard via AI on first signup
-  generateLeaderboard(d).then(()=>{showApp()});
+  // Generate leaderboard via AI on first signup (fire and forget - showApp regardless)
+  generateLeaderboard(d).catch(()=>{}).finally(()=>{showApp()});
 }
 
 function handleLogin(){

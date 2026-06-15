@@ -5,7 +5,7 @@
 
 'use strict';
 
-const DEFAULT_API_KEY = 'sk-4db2af8db4784b82a5ebe9c4daba0d9e';
+const DEFAULT_API_KEY = '__DEEPSEEK_API_KEY__';
 const STORAGE_KEY = 'oteemou_data';
 const CACHE_KEY = 'oteemou_cache';
 const MAX_CACHE = 20;

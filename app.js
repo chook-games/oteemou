@@ -5,82 +5,34 @@
 
 'use strict';
 
-const DEFAULT_API_KEY = '__DEEPSEEK_API_KEY__';
-const STORAGE_KEY = 'oteemou_data';
-const CACHE_KEY = 'oteemou_cache';
-const MAX_CACHE = 20;
-
-// ===== LOCAL STORAGE HELPERS =====
-
-function getData() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch (e) {
-    console.error('getData error:', e);
-  }
-  return null;
-}
-
-function saveData(d) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
-  } catch (e) {
-    console.error('saveData error:', e);
-  }
-}
-
-function getCache() {
-  try {
-    const raw = localStorage.getItem(CACHE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch (e) {}
-  return {};
-}
-
-function saveCache(c) {
-  try {
-    localStorage.setItem(CACHE_KEY, JSON.stringify(c));
-  } catch (e) {}
-}
-
-function getDefaultData() {
-  return {
-    user: null,
-    apiKey: DEFAULT_API_KEY,
-    favorites: [],
-    cart: [],
-    purchaseHistory: [],
-    userReviews: {},
-    points: 0,
-    badges: [],
-    rareFinds: [],
-    leaderboard: null,
-    darkMode: false
-  };
-}
+// Storage helpers (getData/saveData/getCache/getDefaultData) ζουν στο storage.js
+// AI providers + key validation ζουν στο api.js
 
 // ===== INITIALIZATION =====
 
 function init() {
   console.log('init() called');
   let d = getData() || getDefaultData();
-  if (!getData()) saveData(d);
+
+  // Migration / normalization (older versions had a hardcoded placeholder key)
+  if (d.apiKey === '__DEEPSEEK_API_KEY__') d.apiKey = '';
+  if (!d.provider) d.provider = 'deepseek';
+  if (!d.apiModel) d.apiModel = getProvider(d.provider).defaultModel;
+  saveData(d);
 
   if (d.darkMode) {
     document.documentElement.setAttribute('data-theme', 'dark');
   }
 
-  if (d.user) {
+  if (!d.apiKey) {
+    console.log('No API key, showing mandatory key gate');
+    showKeyGate();
+  } else if (d.user) {
     console.log('User found, calling showApp()');
     showApp();
   } else {
     console.log('No user, showing setup');
     document.getElementById('setupScreen').style.display = 'flex';
-  }
-
-  if (d.apiKey && d.apiKey !== DEFAULT_API_KEY) {
-    document.getElementById('apiKeyInput').value = d.apiKey;
   }
 
   generateRecentDiscoveries();
@@ -155,16 +107,6 @@ function handleLogin() {
   showApp();
 }
 
-function saveApiKey() {
-  const key = document.getElementById('apiKeyInput').value.trim();
-  if (!key) return showToast('\u26a0\ufe0f \u0393\u03c1\u03ac\u03c8\u03b5 \u03ad\u03bd\u03b1 API key', 'error');
-
-  let d = getData() || getDefaultData();
-  d.apiKey = key;
-  saveData(d);
-  showToast('\u2705 API key \u03b1\u03c0\u03bf\u03b8\u03b7\u03ba\u03b5\u03cd\u03c4\u03b7\u03ba\u03b5!', 'success');
-}
-
 function showApp() {
   console.log('showApp() called');
   // Hide setup
@@ -228,30 +170,8 @@ function generateRecentDiscoveries() {
   });
 }
 
-// ===== DEEPSEEK API =====
-
-async function callDeepSeek(systemPrompt, userMessage, apiKey) {
-  const resp = await fetch('https://api.deepseek.com/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + apiKey
-    },
-    body: JSON.stringify({
-      model: 'deepseek-chat',
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userMessage }
-      ],
-      temperature: 0.9,
-      max_tokens: 2000
-    })
-  });
-
-  if (!resp.ok) throw new Error('API error: ' + resp.status);
-  const data = await resp.json();
-  return data.choices[0].message.content;
-}
+// ===== AI API =====
+// (providers + key validation στο api.js)
 
 // ===== SEARCH =====
 
@@ -269,12 +189,8 @@ async function doSearch() {
   }
 
   const d = getData();
-  let apiKey = (d && d.apiKey) || DEFAULT_API_KEY;
-
-  // Check if API key is missing
-  if (!apiKey) {
-    showLoading(false);
-    showToast('\u26a0\ufe0f \u03a0\u03c1\u03ad\u03c0\u03b5\u03b9 \u03bd\u03b1 \u03b5\u03b9\u03c3\u03ac\u03b3\u03b5\u03b9\u03c2 \u03c4\u03bf API key \u03c3\u03bf\u03c5 \u03b1\u03c0\u03cc \u03c4\u03bf \u03b5\u03b9\u03ba\u03bf\u03bd\u03af\u03b4\u03b9\u03bf \u0394\u03c5\u03c1\u03b1\u03af\u03c9\u03bd (\u2699\ufe0f) \u03c0\u03ac\u03bd\u03c9 \u03b4\u03b5\u03be\u03b9\u03ac!', 'error');
+  if (!d || !d.apiKey) {
+    showKeyGate('\u26a0\ufe0f \u03a7\u03c1\u03b5\u03b9\u03ac\u03b6\u03b5\u03c4\u03b1\u03b9 \u03ad\u03bd\u03b1 \u03ad\u03b3\u03ba\u03c5\u03c1\u03bf API key \u03b3\u03b9\u03b1 \u03b1\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7.');
     return;
   }
 
@@ -286,7 +202,7 @@ async function doSearch() {
       ']}\n' +
       'Rarity must be 1-100. Number of reviews inversely proportional to rarity: 90-100\u21921-2 reviews, 70-89\u21922-3, 40-69\u21923-4, <40\u21924-5. ratingBreakdown must sum to 100%. totalPurchases 200-5000. All text in Greek. Usernames common Greek first names.';
 
-    const raw = await callDeepSeek(systemPrompt, 'Search query: ' + query, apiKey);
+    const raw = await callAI(systemPrompt, 'Search query: ' + query);
     const cleaned = raw.replace(/```json?/gi, '').replace(/```/g, '').trim();
     const result = JSON.parse(cleaned);
 
@@ -301,9 +217,11 @@ async function doSearch() {
     displayResults(result.products, query);
   } catch (e) {
     console.error(e);
-    // Check if it's an auth error
-    if (e.message && e.message.includes('401')) {
-      showToast('\u26a0\ufe0f \u039b\u03ac\u03b8\u03bf\u03c2 API key! \u03a0\u03ae\u03b3\u03b1\u03b9\u03bd\u03b5 \u03c3\u03c4\u03b9\u03c2 \u03a1\u03c5\u03b8\u03bc\u03af\u03c3\u03b5\u03b9\u03c2 (\u2699\ufe0f) \u03ba\u03b1\u03b9 \u03b2\u03ac\u03bb\u03b5 \u03c4\u03bf \u03c3\u03c9\u03c3\u03c4\u03cc API key.', 'error');
+    const msg = String((e && e.message) || '');
+    // If it's an auth error, force the user to re-enter a valid key
+    if (msg.includes('401') || msg.includes('403')) {
+      clearApiKey();
+      showKeyGate('\u26a0\ufe0f \u03a4\u03bf API key \u03b4\u03b5\u03bd \u03b5\u03af\u03bd\u03b1\u03b9 \u03c0\u03bb\u03ad\u03bf\u03bd \u03ad\u03b3\u03ba\u03c5\u03c1\u03bf. \u0392\u03ac\u03bb\u03b5 \u03ad\u03bd\u03b1 \u03bd\u03ad\u03bf \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03c3\u03c5\u03bd\u03b5\u03c7\u03af\u03c3\u03b5\u03b9\u03c2.');
     } else {
       showToast('\u{1f605} \u039f \u03b1\u03bb\u03b3\u03cc\u03c1\u03b9\u03b8\u03bc\u03bf\u03c2 \u03c0\u03ae\u03b3\u03b5 \u03b3\u03b9\u03b1 \u03ba\u03b1\u03c6\u03ad. \u0394\u03bf\u03ba\u03af\u03bc\u03b1\u03c3\u03b5 \u03be\u03b1\u03bd\u03ac!', 'error');
     }
@@ -674,11 +592,9 @@ function checkBadges(d) {
 async function generateLeaderboard(d) {
   if (d.leaderboard) return; // Already generated
 
-  const apiKey = d.apiKey || DEFAULT_API_KEY;
-
   try {
     const systemPrompt = 'Generate a JSON array of 10 fake Greek users with scores for a leaderboard. Respond ONLY with valid JSON array: [{"name":"\u039c\u03b1\u03c1\u03af\u03b1","score":987},...]. Scores 100-1000. Names common Greek first names.';
-    const raw = await callDeepSeek(systemPrompt, 'Generate leaderboard', apiKey);
+    const raw = await callAI(systemPrompt, 'Generate leaderboard');
     const cleaned = raw.replace(/```json?/gi, '').replace(/```/g, '').trim();
     const lb = JSON.parse(cleaned);
 
@@ -917,13 +833,31 @@ function showSettings() {
   const d = getData();
   if (!d) return;
 
+  const prov = d.provider || 'deepseek';
+  const model = d.apiModel || getProvider(prov).defaultModel;
+  const providerOptions = Object.keys(AI_PROVIDERS).map(function(id) {
+    return '<option value="' + id + '"' + (id === prov ? ' selected' : '') + '>' + AI_PROVIDERS[id].label + '</option>';
+  }).join('');
+
   showModal('\u2699\ufe0f \u03a1\u03c5\u03b8\u03bc\u03af\u03c3\u03b5\u03b9\u03c2',
     '<div class="settings-group">' +
-      '<h3>\u{1f511} API Key DeepSeek</h3>' +
-      '<div class="form-group">' +
-        '<input type="password" id="settingsApiKey" value="' + (d.apiKey || '') + '" placeholder="sk-..." style="width:100%;padding:12px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.95rem;background:#FFF8F0;color:#2D1B3D;box-sizing:border-box;">' +
+      '<h3>\u{1f511} AI API</h3>' +
+      '<div class="form-group" style="margin-bottom:10px;">' +
+        '<label style="display:block;font-weight:500;margin-bottom:4px;font-size:0.8rem;color:#6B5B7B;">\u03a0\u03ac\u03c1\u03bf\u03c7\u03bf\u03c2</label>' +
+        '<select id="settingsProvider" onchange="onSettingsProviderChange()" style="width:100%;padding:12px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.95rem;background:#FFF8F0;color:#2D1B3D;box-sizing:border-box;">' + providerOptions + '</select>' +
       '</div>' +
-      '<button onclick="saveSettingsApiKey()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">\u0391\u03c0\u03bf\u03b8\u03ae\u03ba\u03b5\u03c5\u03c3\u03b7 \u{1f4be}</button>' +
+      '<div class="form-group" style="margin-bottom:10px;">' +
+        '<label style="display:block;font-weight:500;margin-bottom:4px;font-size:0.8rem;color:#6B5B7B;">API Key</label>' +
+        '<input type="password" id="settingsApiKey" value="' + (d.apiKey || '') + '" placeholder="' + getProvider(prov).placeholder + '" style="width:100%;padding:12px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.95rem;background:#FFF8F0;color:#2D1B3D;box-sizing:border-box;">' +
+      '</div>' +
+      '<div class="form-group" style="margin-bottom:10px;">' +
+        '<label style="display:block;font-weight:500;margin-bottom:4px;font-size:0.8rem;color:#6B5B7B;">\u039c\u03bf\u03bd\u03c4\u03ad\u03bb\u03bf</label>' +
+        '<input type="text" id="settingsApiModel" value="' + model + '" placeholder="model" style="width:100%;padding:12px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.95rem;background:#FFF8F0;color:#2D1B3D;box-sizing:border-box;">' +
+      '</div>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+        '<button id="settingsApiSaveBtn" onclick="saveSettingsApiKey()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">\u0391\u03c0\u03bf\u03b8\u03ae\u03ba\u03b5\u03c5\u03c3\u03b7 \u{1f4be}</button>' +
+        '<button onclick="showApiHelp()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">\u{1f4d6} \u039f\u03b4\u03b7\u03b3\u03af\u03b5\u03c2</button>' +
+      '</div>' +
     '</div>' +
     '<div class="settings-group">' +
       '<h3>\u{1f319} \u0395\u03bc\u03c6\u03ac\u03bd\u03b9\u03c3\u03b7</h3>' +
@@ -942,16 +876,6 @@ function showSettings() {
       '<button onclick="clearAllData()" style="padding:8px 16px;border:2px solid #E74C3C;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF0F0;color:#E74C3C;">\u{1f5d1}\ufe0f \u0394\u03b9\u03b1\u03b3\u03c1\u03b1\u03c6\u03ae \u03cc\u03bb\u03c9\u03bd \u03c4\u03c9\u03bd \u03b4\u03b5\u03b4\u03bf\u03bc\u03ad\u03bd\u03c9\u03bd</button>' +
     '</div>'
   );
-}
-
-function saveSettingsApiKey() {
-  const key = document.getElementById('settingsApiKey').value.trim();
-  if (!key) return showToast('\u26a0\ufe0f \u0393\u03c1\u03ac\u03c8\u03b5 \u03ad\u03bd\u03b1 API key', 'error');
-
-  let d = getData() || getDefaultData();
-  d.apiKey = key;
-  saveData(d);
-  showToast('\u2705 API key \u03b1\u03c0\u03bf\u03b8\u03b7\u03ba\u03b5\u03cd\u03c4\u03b7\u03ba\u03b5!', 'success');
 }
 
 function toggleDarkMode() {

@@ -8,6 +8,10 @@
 // Storage helpers (getData/saveData/getCache/getDefaultData) ζουν στο storage.js
 // AI providers + key validation ζουν στο api.js
 
+// Τα τρέχοντα αποτελέσματα (πλήρη δεδομένα, με κριτικές) ώστε το re-render
+// μετά από καλάθι/αγαπημένα να μη χάνει τις κριτικές.
+let currentProducts = null;
+
 // ===== INITIALIZATION =====
 
 function init() {
@@ -233,7 +237,8 @@ async function doSearch() {
   }
 }
 
-function displayResults(products, query) {
+function displayResults(products, query, silent) {
+  currentProducts = products;
   document.getElementById('resultsTitle').textContent = '\u0391\u03c0\u03bf\u03c4\u03b5\u03bb\u03ad\u03c3\u03bc\u03b1\u03c4\u03b1 \u03b3\u03b9\u03b1: "' + query + '"';
 
   // Calculate points
@@ -242,9 +247,9 @@ function displayResults(products, query) {
   }, 0);
   document.getElementById('pointsEarned').textContent = '+' + totalRarity + ' \u03c0\u03cc\u03bd\u03c4\u03bf\u03b9';
 
-  // Add points to user
+  // Add points to user (μόνο στην αρχική αναζήτηση, όχι στο re-render)
   let d = getData();
-  if (d) {
+  if (d && !silent) {
     d.points = (d.points || 0) + totalRarity;
     checkBadges(d);
     saveData(d);
@@ -319,6 +324,8 @@ function displayResults(products, query) {
 
     grid.appendChild(card);
 
+    if (silent) return;
+
     // Confetti for rarity > 80
     if (p.rarity > 80) showConfetti();
 
@@ -386,13 +393,8 @@ function toggleFav(idx) {
   saveData(d);
   checkBadges(d);
 
-  // Re-render
-  const products = getCurrentProducts();
-  if (products) {
-    const title = document.getElementById('resultsTitle').textContent;
-    const q = title.replace('\u0391\u03c0\u03bf\u03c4\u03b5\u03bb\u03ad\u03c3\u03bc\u03b1\u03c4\u03b1 \u03b3\u03b9\u03b1: "', '').replace('"', '');
-    displayResults(products, q);
-  }
+  // Re-render (διατηρώντας κριτικές κ.λπ.)
+  rerenderResults();
 }
 
 // ===== CART =====
@@ -417,13 +419,7 @@ function toggleCart(idx) {
 
   saveData(d);
   updateCartBadge();
-
-  const products = getCurrentProducts();
-  if (products) {
-    const title = document.getElementById('resultsTitle').textContent;
-    const q = title.replace('\u0391\u03c0\u03bf\u03c4\u03b5\u03bb\u03ad\u03c3\u03bc\u03b1\u03c4\u03b1 \u03b3\u03b9\u03b1: "', '').replace('"', '');
-    displayResults(products, q);
-  }
+  rerenderResults();
 }
 
 function updateCartBadge() {
@@ -438,20 +434,12 @@ function updateCartBadge() {
   }
 }
 
-function getCurrentProducts() {
-  const grid = document.getElementById('productsGrid');
-  if (!grid.children.length) return null;
-
-  const products = [];
-  grid.querySelectorAll('.product-card').forEach(function(card) {
-    const name = card.querySelector('.product-name')?.textContent;
-    const desc = card.querySelector('.product-desc')?.textContent;
-    const price = parseFloat(card.querySelector('.product-price')?.textContent?.replace('\u20ac', '').replace(',', '.'));
-    const rarity = parseInt(card.querySelector('.product-rarity')?.textContent?.match(/\d+/)?.[0]);
-    if (name) products.push({ name: name, description: desc, price: price, rarity: rarity });
-  });
-
-  return products;
+// Ξανα-ζωγραφίζει τα τρέχοντα αποτελέσματα κρατώντας όλα τα πεδία (κριτικές, ratingBreakdown...).
+function rerenderResults() {
+  if (!currentProducts) return;
+  const title = document.getElementById('resultsTitle').textContent;
+  const q = title.replace('\u0391\u03c0\u03bf\u03c4\u03b5\u03bb\u03ad\u03c3\u03bc\u03b1\u03c4\u03b1 \u03b3\u03b9\u03b1: "', '').replace('"', '');
+  displayResults(currentProducts, q, true);
 }
 
 // ===== PURCHASE =====
@@ -536,6 +524,7 @@ function submitReview(pid) {
   saveData(d);
   closeModal();
   showToast('\u2705 \u039a\u03c1\u03b9\u03c4\u03b9\u03ba\u03ae \u03c0\u03c1\u03bf\u03c3\u03c4\u03ad\u03b8\u03b7\u03ba\u03b5!', 'success');
+  rerenderResults();
 }
 
 // ===== RARE FINDS =====

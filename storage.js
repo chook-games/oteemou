@@ -54,6 +54,7 @@ function getDefaultData() {
     badges: [],
     rareFinds: [],
     leaderboard: null,
-    darkMode: false
+    darkMode: false,
+    imagesEnabled: true
   };
 }

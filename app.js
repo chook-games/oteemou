@@ -208,6 +208,9 @@ async function doSearch() {
 
     if (!result.products || !result.products.length) throw new Error('No products');
 
+    // Attach a deterministic image URL (+ remember it in the cache)
+    result.products.forEach(function(p) { getProductImage(p); });
+
     // Cache it
     cache[cacheKey] = result.products;
     const keys = Object.keys(cache);
@@ -281,8 +284,8 @@ function displayResults(products, query) {
 
     card.innerHTML =
       '<div class="product-image">' +
-        '<span style="font-size:4rem;opacity:0.5;">\u{1f5bc}\ufe0f</span>' +
-        (p.rarity === 100 ? '<span style="position:absolute;top:8px;right:8px;font-size:2rem;animation:crownBounce 1.5s infinite;">\u{1f451}</span>' : '') +
+        productImageHTML(p) +
+        (p.rarity === 100 ? '<span style="position:absolute;top:8px;right:8px;font-size:2rem;animation:crownBounce 1.5s infinite;z-index:2;">\u{1f451}</span>' : '') +
       '</div>' +
       '<div class="product-body">' +
         '<div class="product-name">' + escapeHtml(p.name) + '</div>' +
@@ -335,6 +338,21 @@ function getProductId(p) {
   return (p.name || '') + '|' + (p.description || '') + '|' + (p.price || 0);
 }
 
+// Διαβάζει ένα προϊόν από την κάρτα του, μαζί με το image URL (ώστε να μη χαθεί).
+function getProductFromCard(idx) {
+  const card = document.getElementById('product-' + idx);
+  if (!card) return null;
+
+  const name = card.querySelector('.product-name')?.textContent;
+  const description = card.querySelector('.product-desc')?.textContent;
+  const price = parseFloat(card.querySelector('.product-price')?.textContent?.replace('\u20ac', '').replace(',', '.'));
+  const rarity = parseInt(card.querySelector('.product-rarity')?.textContent?.match(/\d+/)?.[0]);
+
+  const product = { name: name, description: description, price: price, rarity: rarity };
+  product.image = readCardImage(card) || getProductImage(product) || '';
+  return product;
+}
+
 function formatPrice(p) {
   return p.toFixed(2).replace('.', ',');
 }
@@ -348,14 +366,8 @@ function escapeHtml(text) {
 // ===== FAVORITES =====
 
 function toggleFav(idx) {
-  const card = document.getElementById('product-' + idx);
-  if (!card) return;
-
-  const name = card.querySelector('.product-name')?.textContent;
-  const desc = card.querySelector('.product-desc')?.textContent;
-  const price = parseFloat(card.querySelector('.product-price')?.textContent?.replace('\u20ac', '').replace(',', '.'));
-  const rarity = parseInt(card.querySelector('.product-rarity')?.textContent?.match(/\d+/)?.[0]);
-  const product = { name: name, description: desc, price: price, rarity: rarity };
+  const product = getProductFromCard(idx);
+  if (!product) return;
 
   let d = getData();
   if (!d) return;
@@ -386,14 +398,8 @@ function toggleFav(idx) {
 // ===== CART =====
 
 function toggleCart(idx) {
-  const card = document.getElementById('product-' + idx);
-  if (!card) return;
-
-  const name = card.querySelector('.product-name')?.textContent;
-  const desc = card.querySelector('.product-desc')?.textContent;
-  const price = parseFloat(card.querySelector('.product-price')?.textContent?.replace('\u20ac', '').replace(',', '.'));
-  const rarity = parseInt(card.querySelector('.product-rarity')?.textContent?.match(/\d+/)?.[0]);
-  const product = { name: name, description: desc, price: price, rarity: rarity };
+  const product = getProductFromCard(idx);
+  if (!product) return;
 
   let d = getData();
   if (!d) return;
@@ -453,17 +459,11 @@ function getCurrentProducts() {
 let lastPurchasedProduct = null;
 
 function buyNow(idx) {
-  const card = document.getElementById('product-' + idx);
-  if (!card) return;
-
-  const name = card.querySelector('.product-name')?.textContent;
-  const desc = card.querySelector('.product-desc')?.textContent;
-  const price = parseFloat(card.querySelector('.product-price')?.textContent?.replace('\u20ac', '').replace(',', '.'));
-  const rarity = parseInt(card.querySelector('.product-rarity')?.textContent?.match(/\d+/)?.[0]);
-  const product = { name: name, description: desc, price: price, rarity: rarity };
+  const product = getProductFromCard(idx);
+  if (!product) return;
 
   lastPurchasedProduct = product;
-  document.getElementById('purchaseProductName').textContent = '"' + name + '" \u03ad\u03c1\u03c7\u03b5\u03c4\u03b1\u03b9... \u03b1\u03c0\u03cc \u03ac\u03bb\u03bb\u03b7 \u03b4\u03b9\u03ac\u03c3\u03c4\u03b1\u03c3\u03b7! \u{1f680}';
+  document.getElementById('purchaseProductName').textContent = '"' + product.name + '" \u03ad\u03c1\u03c7\u03b5\u03c4\u03b1\u03b9... \u03b1\u03c0\u03cc \u03ac\u03bb\u03bb\u03b7 \u03b4\u03b9\u03ac\u03c3\u03c4\u03b1\u03c3\u03b7! \u{1f680}';
   document.getElementById('purchaseOverlay').style.display = 'flex';
 
   // Add to purchase history
@@ -730,7 +730,7 @@ function showFavorites() {
 
   const items = favs.map(function(f, i) {
     return '<div class="cart-item">' +
-      '<div class="cart-img">\u{1f5bc}\ufe0f</div>' +
+      thumbImageHTML(f) +
       '<div class="cart-info">' +
         '<div class="cart-name">' + escapeHtml(f.name) + '</div>' +
         '<div class="cart-price">\u20ac' + formatPrice(f.price) + ' \u2b50' + (f.rarity || 0) + '</div>' +
@@ -775,7 +775,7 @@ function showCart() {
 
   const items = cart.map(function(c, i) {
     return '<div class="cart-item">' +
-      '<div class="cart-img">\u{1f5bc}\ufe0f</div>' +
+      thumbImageHTML(c) +
       '<div class="cart-info">' +
         '<div class="cart-name">' + escapeHtml(c.name) + '</div>' +
         '<div class="cart-price">\u20ac' + formatPrice(c.price) + '</div>' +
@@ -861,7 +861,10 @@ function showSettings() {
     '</div>' +
     '<div class="settings-group">' +
       '<h3>\u{1f319} \u0395\u03bc\u03c6\u03ac\u03bd\u03b9\u03c3\u03b7</h3>' +
-      '<button onclick="toggleDarkMode()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">' + (d.darkMode ? '\u2600\ufe0f \u03a6\u03c9\u03c4\u03b5\u03b9\u03bd\u03ae \u03bb\u03b5\u03b9\u03c4\u03bf\u03c5\u03c1\u03b3\u03af\u03b1' : '\u{1f319} \u03a3\u03ba\u03bf\u03c4\u03b5\u03b9\u03bd\u03ae \u03bb\u03b5\u03b9\u03c4\u03bf\u03c5\u03c1\u03b3\u03af\u03b1') + '</button>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+        '<button onclick="toggleDarkMode()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">' + (d.darkMode ? '\u2600\ufe0f \u03a6\u03c9\u03c4\u03b5\u03b9\u03bd\u03ae \u03bb\u03b5\u03b9\u03c4\u03bf\u03c5\u03c1\u03b3\u03af\u03b1' : '\u{1f319} \u03a3\u03ba\u03bf\u03c4\u03b5\u03b9\u03bd\u03ae \u03bb\u03b5\u03b9\u03c4\u03bf\u03c5\u03c1\u03b3\u03af\u03b1') + '</button>' +
+        '<button onclick="toggleImages()" style="padding:8px 16px;border:2px solid #FFD4B8;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF8F0;color:#2D1B3D;">' + (imagesEnabled() ? '\u{1f5bc}\ufe0f AI \u03b5\u03b9\u03ba\u03cc\u03bd\u03b5\u03c2: \u039d\u03b1\u03b9' : '\u{1f5bc}\ufe0f AI \u03b5\u03b9\u03ba\u03cc\u03bd\u03b5\u03c2: \u038c\u03c7\u03b9') + '</button>' +
+      '</div>' +
     '</div>' +
     '<div class="settings-group">' +
       '<h3>\u{1f4be} \u0394\u03b5\u03b4\u03bf\u03bc\u03ad\u03bd\u03b1</h3>' +
@@ -876,6 +879,18 @@ function showSettings() {
       '<button onclick="clearAllData()" style="padding:8px 16px;border:2px solid #E74C3C;border-radius:10px;font-family:\'Fredoka\',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:#FFF0F0;color:#E74C3C;">\u{1f5d1}\ufe0f \u0394\u03b9\u03b1\u03b3\u03c1\u03b1\u03c6\u03ae \u03cc\u03bb\u03c9\u03bd \u03c4\u03c9\u03bd \u03b4\u03b5\u03b4\u03bf\u03bc\u03ad\u03bd\u03c9\u03bd</button>' +
     '</div>'
   );
+}
+
+function toggleImages() {
+  let d = getData();
+  if (!d) return;
+
+  d.imagesEnabled = d.imagesEnabled === false;
+  saveData(d);
+  showToast(d.imagesEnabled
+    ? '\u{1f5bc}\ufe0f \u039f\u03b9 AI \u03b5\u03b9\u03ba\u03cc\u03bd\u03b5\u03c2 \u03b5\u03bd\u03b5\u03c1\u03b3\u03bf\u03c0\u03bf\u03b9\u03ae\u03b8\u03b7\u03ba\u03b1\u03bd!'
+    : '\u{1f5bc}\ufe0f \u039f\u03b9 AI \u03b5\u03b9\u03ba\u03cc\u03bd\u03b5\u03c2 \u03b1\u03c0\u03b5\u03bd\u03b5\u03c1\u03b3\u03bf\u03c0\u03bf\u03b9\u03ae\u03b8\u03b7\u03ba\u03b1\u03bd.', 'success');
+  showSettings();
 }
 
 function toggleDarkMode() {

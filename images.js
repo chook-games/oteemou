@@ -60,15 +60,68 @@ function readCardImage(card) {
   return (img && (img.getAttribute('src') || img.src)) || '';
 }
 
-// Markup εικόνας για κάρτα προϊόντος (async φόρτωση, με placeholder).
+// Markup εικόνας για κάρτα προϊόντος. Το πραγματικό src μπαίνει αργότερα
+// από την ουρά (data-src) ώστε να μη γίνεται burst που ρίχνει το Pollinations.
 function productImageHTML(product) {
   const url = getProductImage(product);
-  if (!url) {
-    return '<span class="product-img-ph" style="font-size:4rem;opacity:0.5;">\u{1f5bc}\ufe0f</span>';
+  const ph = '<span class="product-img-ph" style="font-size:4rem;opacity:0.5;">\u{1f5bc}\ufe0f</span>';
+  if (!url) return ph;
+  return ph + '<img class="product-img" data-src="' + url + '" alt="" decoding="async">';
+}
+
+// --- Ουρά φόρτωσης εικόνων (περιορισμένο concurrency + retries) ---
+let _imgQueue = [];
+let _imgActive = 0;
+const IMG_CONCURRENCY = 2;
+const IMG_MAX_ATTEMPTS = 3;
+const IMG_RETRY_MS = 2500;
+
+function clearImageQueue() {
+  _imgQueue = [];
+}
+
+function loadProductImages(scope) {
+  const root = scope || document;
+  root.querySelectorAll('img.product-img[data-src]').forEach(function(img) {
+    _imgQueue.push({ img: img, url: img.getAttribute('data-src'), tries: 0 });
+  });
+  _pumpImages();
+}
+
+function _pumpImages() {
+  while (_imgActive < IMG_CONCURRENCY && _imgQueue.length) {
+    _loadOne(_imgQueue.shift());
   }
-  return '<span class="product-img-ph" style="font-size:4rem;opacity:0.5;">\u{1f5bc}\ufe0f</span>' +
-    '<img class="product-img" src="' + url + '" alt="" loading="lazy" decoding="async" ' +
-    'onload="this.parentNode.classList.add(\'has-img\')" onerror="this.remove()">';
+}
+
+function _loadOne(item) {
+  const img = item.img;
+  if (!img || !img.isConnected) return; // η κάρτα αφαιρέθηκε
+
+  _imgActive++;
+
+  img.onload = function() {
+    if (img.parentNode) img.parentNode.classList.add('has-img');
+    _imgActive--;
+    _pumpImages();
+  };
+
+  img.onerror = function() {
+    _imgActive--;
+    item.tries++;
+    if (item.tries < IMG_MAX_ATTEMPTS && img.isConnected) {
+      setTimeout(function() {
+        _imgQueue.push(item);
+        _pumpImages();
+      }, IMG_RETRY_MS * item.tries);
+    } else {
+      img.remove();
+      _pumpImages();
+    }
+  };
+
+  // Σε retry αλλάζουμε ελαφρώς το query ώστε να ξανα-δοκιμαστεί το request.
+  img.src = item.tries > 0 ? item.url + '&retry=' + item.tries : item.url;
 }
 
 // Markup εικόνας για λίστες (καλάθι / αγαπημένα).

@@ -127,7 +127,10 @@
     <div style="max-width:1200px;margin:0 auto;padding:24px 20px;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
         <h2 id="resultsTitle" style="font-size:1.3rem;">Αποτελέσματα</h2>
-        <span id="pointsEarned" style="background:#FFD700;color:#333;padding:6px 16px;border-radius:50px;font-weight:600;font-size:0.9rem;">+0 πόντοι</span>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <button onclick="shareResults()" style="border:none;border-radius:50px;padding:8px 16px;font-family:'Fredoka',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;background:linear-gradient(135deg,#FF6B35,#7B2D8E);color:#fff;">🔗 Μοιράσου</button>
+          <span id="pointsEarned" style="background:#FFD700;color:#333;padding:6px 16px;border-radius:50px;font-weight:600;font-size:0.9rem;">+0 πόντοι</span>
+        </div>
       </div>
       <div id="productsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;"></div>
     </div>
@@ -257,6 +260,8 @@
 <script src="storage.js"></script>
 <script src="api.js"></script>
 <script src="images.js"></script>
+<script src="share.js"></script>
+<script src="settings.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
